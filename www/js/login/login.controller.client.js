@@ -1,21 +1,28 @@
-angular.module('starter.controllers')
-    .controller('authenticationFormCtrl', ['$scope', '$state','Podio', '$ionicPopup', '$ionicLoading', function ($scope,$state,Podio, $ionicPopup, $ionicLoading) {
+angular.module('freedomnation.controllers')
+    .controller('authenticationFormCtrl', ['$scope', '$state','Podio', '$ionicPopup', function ($scope,$state,Podio, $ionicPopup) {
 
+        /*
+        * Initialize Login Info
+        * */
         $scope.auth = {
             email: '',
             password: ''
         };
 
         Podio.podio.isAuthenticated()
-            .then(function() {
-            $state.go('tab.events');
-        });
+            .then(function () {
+                $state.go('tab.events');
+            });
 
+        /*
+        * Sign-in Behavior
+        * @param {Object} Form Object
+        */
         $scope.signIn = function(form) {
-            console.log('entered signin');
             if(form.$valid) {
                 Podio.podio.authenticateWithCredentials(form.email.$modelValue, form.password.$modelValue, function (error) {
-                    if (error) {
+                    console.log(error);
+                    if (!error) {
                         console.log(error);
                         $scope.showAlert()
                     } else {
@@ -29,7 +36,10 @@ angular.module('starter.controllers')
 
         };
 
-        // An alert dialog
+
+        /*
+         * Login Error Alert Function
+         */
         $scope.showAlert = function() {
             var alertPopup = $ionicPopup.alert({
                 title: 'Login Unsuccesful!',

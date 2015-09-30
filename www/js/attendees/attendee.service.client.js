@@ -1,7 +1,20 @@
+/*global angular */
+
+/**
+ * Services that persists and retrieves attendee information from PODIO API
+ * PODIO API URL : api.podio.com
+ *
+ * Both Attendee and Attendees Controller use this service, returning promises for all changes to the
+ * model.
+ */
+
 angular.module('freedomnation.services')
     .factory('AttendeeService', ['Podio', '$q', '$http', 'utils', function (Podio,$q,$http,utils) {
 
-        var citizenFieldIds = {
+        var newAttendee = {},
+            newAttendees = [],
+            fileAPIUrl = 'https://api.podio.com/file/',
+            citizenFieldIds = {
             info: 80911192,
             barcode: 102793685,
             status: 92390772,
@@ -9,10 +22,11 @@ angular.module('freedomnation.services')
             img: 80911195
         };
 
-        var newAttendee = {};
-        var newAttendees = [];
-
-
+        /*
+         * Arrange Attendee data for exposing to the model
+         * @param {Object} Promise Response Object
+         * @returns {Object} Rearranged attendee information based upon citizen field ids
+         */
         var arrangeAttendee = function(responseEvent) {
             var att = {};
             var fields = responseEvent.fields;
@@ -55,6 +69,12 @@ angular.module('freedomnation.services')
 
             return att;
         };
+
+        /*
+         * Arrange Attendees data for exposing to the model
+         * @param {Object} Promise Response Object
+         * @returns {Object} Rearranged attendee information based upon citizen field ids
+         */
 
         var arrangeAttendees = function(response) {
 
@@ -107,6 +127,11 @@ angular.module('freedomnation.services')
 
         return {
 
+            /*
+             * Get a Multiple Attendees
+             * @param {Array} attendeeIds - Attendee Ids
+             * @returns {Object} Returns a promise with event information
+             */
 
             getAttendees: function(attendeeIds) {
 
@@ -123,8 +148,10 @@ angular.module('freedomnation.services')
                         newAttendees = arrangeAttendees(response);
 
                         for(var i = 0; i < newAttendees.length; i++) {
+                            //capture value of i with IIFE
                             (function (j) {
-                                $http.get('https://api.podio.com/file/' + newAttendees[j].img.file_id + '/raw',{responseType:'arraybuffer'})
+                                $http.get(fileAPIUrl + newAttendees[j].img.file_id
+                                    + '/raw',{responseType:'arraybuffer'})
                                     .then(function(response) {
                                         newAttendees[j].img.src = utils.convertDataUrl(response);
                                     })
@@ -161,7 +188,7 @@ angular.module('freedomnation.services')
                         return newAttendee.img.file_id;
                     })
                     .then(function(imgId) {
-                        return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
+                        return $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'});
                     }).then(function(response) {
                         newAttendee.img.src = utils.convertDataUrl(response);
                         attendee.resolve(newAttendee);
@@ -184,17 +211,11 @@ angular.module('freedomnation.services')
 
                 Podio.podio.request('post', '/item/app/10462146/filter', requestData)
                     .then(function (responseEvent) {
-
-/*                        if(responseEvent.items[0] == null ){
-                            console.log(Podio.podio.request);
-                            return;
-                        }*/
-
                         newAttendee = arrangeAttendee(responseEvent.items[0]);
                         return newAttendee.img.file_id;
                     })
                     .then(function(imgId) {
-                        return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
+                        return $http.get(fileAPIUrl+ imgId + '/raw', {responseType: 'arraybuffer'});
                     }).then(function(response) {
                         newAttendee.img.src = utils.convertDataUrl(response);
                         attendee.resolve(newAttendee);
@@ -208,7 +229,8 @@ angular.module('freedomnation.services')
             getImg: function(imgId) {
                 var qImgUrl = $q.defer();
 
-                $http.get('https://api.podio.com/file/' + imgId+ '/raw',{responseType:'arraybuffer'}).then(function(response) {
+                $http.get(fileAPIUrl + imgId+ '/raw',{responseType:'arraybuffer'})
+                .then(function(response) {
                     var dataUrl = utils.convertDataUrl(response);
                     qImgUrl.resolve(dataURL);
                 }).catch(function(error) {

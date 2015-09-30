@@ -1,3 +1,13 @@
+/*global angular */
+
+/**
+ * Service that persists and retrieves event information from PODIO API
+ * PODIO API URL : api.podio.com
+ *
+ * Both Event and Events Controller use this service, returning promises for all changes to the
+ * model.
+ */
+
 angular.module('freedomnation.services')
     .factory('EventService', ['Podio','$q', '$http', 'utils', function (Podio,$q,$http,utils) {
 
@@ -11,6 +21,12 @@ angular.module('freedomnation.services')
             desc: 89107344,
             img: 89107348
         };
+
+        /*
+         * Arrange Event Data for exposing to the model
+         * @param {Object} Promise Response Object
+         * @returns {Object} Rearranged event information based upon event field ids
+         */
 
         var arrangeEvent = function(responseEvent) {
 
@@ -63,6 +79,11 @@ angular.module('freedomnation.services')
         return {
 
 
+            /*
+             * Get a single event
+             * @param {String} eventId - Id of the event
+             * @returns {Object} Returns a promise with event information
+             */
              getEvent: function(eventId) {
                  var deferred = $q.defer();
 
@@ -83,6 +104,10 @@ angular.module('freedomnation.services')
                  return deferred.promise;
              },
 
+            /*
+             * Get multiple events
+             * @returns {Object} Returns a promise with event information
+             */
             getEvents: function () {
 
                 var deferred = $q.defer();

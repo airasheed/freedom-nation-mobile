@@ -1,3 +1,9 @@
+/**
+ * The Event Detail controller for the app. The controller:
+ * - retrieves and persists the events model from Podio API via the Event service
+ * - exposes the model to the template
+ */
+
 angular.module('freedomnation.controllers')
     .controller('EventDetailsCtrl', ['$scope', '$stateParams', '$cordovaBarcodeScanner', '$state', 'Podio', '$ionicLoading', 'event',function ($scope, $stateParams, $cordovaBarcodeScanner, $state,Podio, $ionicLoading,event) {
 
@@ -27,7 +33,6 @@ angular.module('freedomnation.controllers')
             })
             .then(function(data) {
                 $scope.event = data;
-                console.log($scope.event.id, $scope.event.attendees);
             })
             .then(function() {
                 $ionicLoading.hide();

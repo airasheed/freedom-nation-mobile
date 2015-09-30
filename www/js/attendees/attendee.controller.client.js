@@ -1,3 +1,10 @@
+
+/**
+ * The Attendee controller for the app. The controller:
+ * - retrieves and persists the individual attendee model data from Podio API via the Attendee service
+ * - exposes the model to the template
+ */
+
 angular.module('freedomnation.controllers')
     .controller('AttendeeDetailCtrl', ['$scope', '$state', '$stateParams', 'Podio', '$ionicLoading', '$http','attendee','$ionicPopup','$ionicHistory', function ($scope, $state, $stateParams, Podio, $ionicLoading, $http,attendee, $ionicPopup,$ionicHistory) {
 
