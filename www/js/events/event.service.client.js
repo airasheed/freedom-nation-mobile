@@ -1,8 +1,9 @@
 angular.module('freedomnation.services')
-    .factory('EventService', function (Podio,$q,$http) {
+    .factory('EventService', ['Podio','$q', '$http', 'utils', function (Podio,$q,$http,utils) {
 
-        var newEvent = {};
-        var eventFieldIds = {
+        var newEvent = {},
+            newEvents = [],
+            eventFieldIds = {
             title: 89107336,
             date: 89107337,
             attendees: 89107415,
@@ -55,23 +56,9 @@ angular.module('freedomnation.services')
                 }
             }
 
-
             return newEvent;
         };
 
-        var convertDataUrl = function(response) {
-            var raw = '',
-                bytes = new Uint8Array(response.data),
-                length = bytes.length;
-            for (var i = 0; i < length; i++) {
-                raw += String.fromCharCode(bytes[i]);
-            }
-
-            var b64 = btoa(raw);
-            var dataURL = "data:image/jpeg;base64," + b64;
-
-            return dataURL;
-        };
 
         return {
 
@@ -87,16 +74,38 @@ angular.module('freedomnation.services')
                      .then(function(imgId) {
                          return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
                      }).then(function(response) {
-                         newEvent.img.src = convertDataUrl(response);
+                         newEvent.img.src = utils.convertDataUrl(response);
                          deferred.resolve(newEvent);
                      })
                      .catch(function(error) {
                          console.log(error);
                      });
                  return deferred.promise;
-             }
+             },
+
+            getEvents: function () {
+
+                var deferred = $q.defer();
+
+                Podio.podio.request('post', '/item/app/11602319/filter')
+                    .then(function (response) {
+
+                        var responseEvents = response.items;
+
+                        for (var i = 0, n = responseEvents.length; i < n; i++) {
+                            newEvents.push(arrangeEvent(responseEvents[i]));
+                        }
+
+                        deferred.resolve(newEvents);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+
+                return deferred.promise;
+            }
         }
 
 
 
-    });
+    }]);

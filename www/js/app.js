@@ -9,7 +9,8 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
 
 .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage) {
 
-
+      /*
+      * Local Storage Object Used*/
       $localstorage.get('password', function (token) {
         $http.defaults.headers.common['Authorization'] = 'OAuth2 ' + token.accessToken;
       });
@@ -45,7 +46,7 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
     .state('tab', {
     url: '/tab',
     abstract: true,
-    templateUrl: 'templates/tabs.html'
+    templateUrl: 'views/tabs.html'
   })
 
   // Each tab has its own nav history stack:
@@ -57,8 +58,8 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
         templateUrl: 'views/events.html',
         controller: 'EventsCtrl',
         resolve: {
-          events: function (EventsService) {
-            return EventsService;
+          events: function (EventService) {
+            return EventService;
           }
         }
       }
@@ -106,19 +107,7 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
             resolve: {
               attendee : function(AttendeeService) {
                 return AttendeeService;
-              },
-
-              PreviousState: [
-                "$state",
-                function ($state) {
-                  var currentStateData = {
-                    Name: $state.current.name,
-                    Params: $state.params,
-                    URL: $state.href($state.current.name, $state.params)
-                  };
-                  return currentStateData;
-                }
-              ]
+              }
             }
           }
         },

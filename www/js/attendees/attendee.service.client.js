@@ -1,5 +1,5 @@
 angular.module('freedomnation.services')
-    .factory('AttendeeService', function (Podio,$q,$http) {
+    .factory('AttendeeService', ['Podio', '$q', '$http', 'utils', function (Podio,$q,$http,utils) {
 
         var citizenFieldIds = {
             info: 80911192,
@@ -11,32 +11,7 @@ angular.module('freedomnation.services')
 
         var newAttendee = {};
         var newAttendees = [];
-        var newAttendeesUrls = [];
 
-        var getImgIds = function(dataArray) {
-
-            var tempArray = [];
-
-            dataArray.forEach(function (arrayArg) {
-                tempArray.push(arrayArg.img.file_id);
-            });
-
-            return tempArray;
-        };
-
-        var convertDataUrl = function(response) {
-            var raw = '',
-                bytes = new Uint8Array(response.data),
-                length = bytes.length;
-            for (var i = 0; i < length; i++) {
-                raw += String.fromCharCode(bytes[i]);
-            }
-
-            var b64 = btoa(raw);
-            var dataURL = "data:image/jpeg;base64," + b64;
-
-            return dataURL;
-        };
 
         var arrangeAttendee = function(responseEvent) {
             var att = {};
@@ -132,11 +107,6 @@ angular.module('freedomnation.services')
 
         return {
 
-            //Get Attendee
-            /*
-            * Usese two utility functions:
-            * arrangeAttendee() and convertDataUrl
-            * */
 
             getAttendees: function(attendeeIds) {
 
@@ -156,7 +126,7 @@ angular.module('freedomnation.services')
                             (function (j) {
                                 $http.get('https://api.podio.com/file/' + newAttendees[j].img.file_id + '/raw',{responseType:'arraybuffer'})
                                     .then(function(response) {
-                                        newAttendees[j].img.src = convertDataUrl(response);
+                                        newAttendees[j].img.src = utils.convertDataUrl(response);
                                     })
                                     .catch(function(error) {
                                         console.log('for loop response: ', error);
@@ -193,7 +163,7 @@ angular.module('freedomnation.services')
                     .then(function(imgId) {
                         return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
                     }).then(function(response) {
-                        newAttendee.img.src = convertDataUrl(response);
+                        newAttendee.img.src = utils.convertDataUrl(response);
                         attendee.resolve(newAttendee);
 
                     })
@@ -226,7 +196,7 @@ angular.module('freedomnation.services')
                     .then(function(imgId) {
                         return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
                     }).then(function(response) {
-                        newAttendee.img.src = convertDataUrl(response);
+                        newAttendee.img.src = utils.convertDataUrl(response);
                         attendee.resolve(newAttendee);
                     })
                     .catch(function(error) {
@@ -239,15 +209,7 @@ angular.module('freedomnation.services')
                 var qImgUrl = $q.defer();
 
                 $http.get('https://api.podio.com/file/' + imgId+ '/raw',{responseType:'arraybuffer'}).then(function(response) {
-                    var raw = '',
-                        bytes = new Uint8Array(response.data),
-                        length = bytes.length;
-                    for (var i = 0; i < length; i++) {
-                        raw += String.fromCharCode(bytes[i]);
-                    }
-
-                    var b64 = btoa(raw);
-                    var dataURL = "data:image/jpeg;base64,"+b64;
+                    var dataUrl = utils.convertDataUrl(response);
                     qImgUrl.resolve(dataURL);
                 }).catch(function(error) {
                     console.log(error);
@@ -273,8 +235,6 @@ angular.module('freedomnation.services')
                     .catch(function(error) {
                         console.log(error);
                     });
-
-
             }
         };
-    });
+    }]);

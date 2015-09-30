@@ -20,12 +20,12 @@ angular.module('freedomnation.services', [])
 
       return {
         podio: podio,
-        getEvents: function() {
+        getEvents: function () {
 
           var res = {};
-          podio.request('post', '/item/app/11602319/filter').then(function(response) {
+          podio.request('post', '/item/app/11602319/filter').then(function (response) {
             res = response;
-          }, function(error) {
+          }, function (error) {
             console.log(error);
           });
 
@@ -52,4 +52,23 @@ angular.module('freedomnation.services', [])
         }
       };
     }])
+    .factory('utils', function () {
+
+      return {
+        convertDataUrl: function(rawImg) {
+          var raw = '',
+              bytes = new Uint8Array(rawImg.data),
+              length = bytes.length;
+          for (var i = 0; i < length; i++) {
+            raw += String.fromCharCode(bytes[i]);
+          }
+
+          var b64 = btoa(raw);
+          var dataURL = "data:image/jpeg;base64," + b64;
+
+          return dataURL;
+        }
+      }
+
+    });
 
