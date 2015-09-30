@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngCordova','ngMessages', 'freedomnation.controllers', 'freedomnation.services','freedomnation.filters'])
+angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnation.controllers', 'freedomnation.services','freedomnation.filters'])
 
 .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage) {
 
