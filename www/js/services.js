@@ -1,4 +1,4 @@
-angular.module('starter.services', [])
+angular.module('freedomnation.services', [])
     .factory('Podio', ['$localstorage', function ($localstorage) {
 
       var podio = new PodioJS({

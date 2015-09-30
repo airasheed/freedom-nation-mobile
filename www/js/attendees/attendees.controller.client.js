@@ -1,4 +1,4 @@
-angular.module('starter.controllers')
+angular.module('freedomnation.controllers')
     .controller('AttendeesCtrl', ['$scope', '$stateParams','Podio','$ionicLoading','$state','attendees', function ($scope,$stateParams,Podio,$ionicLoading,$state,attendees) {
 
         $ionicLoading.show({

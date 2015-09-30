@@ -1,4 +1,4 @@
-angular.module('starter.controllers')
+angular.module('freedomnation.controllers')
     .controller('EventsCtrl', ['$scope','Podio', '$ionicLoading', 'events', '$state', function ($scope, Podio, $ionicLoading,events,$state) {
 
 

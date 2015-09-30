@@ -1,7 +1,6 @@
-angular.module('starter.controllers')
+angular.module('freedomnation.controllers')
     .controller('AttendeeDetailCtrl', ['$scope', '$state', '$stateParams', 'Podio', '$ionicLoading', '$http','attendee','$ionicPopup','$ionicHistory', function ($scope, $state, $stateParams, Podio, $ionicLoading, $http,attendee, $ionicPopup,$ionicHistory) {
 
-        console.log($ionicHistory);
         $ionicLoading.show({
             content: 'Loading',
             animation: 'fade-in',

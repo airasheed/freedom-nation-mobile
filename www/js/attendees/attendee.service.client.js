@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('freedomnation.services')
     .factory('AttendeeService', function (Podio,$q,$http) {
 
         var citizenFieldIds = {

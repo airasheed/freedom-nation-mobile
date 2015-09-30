@@ -1,4 +1,4 @@
-angular.module('starter.controllers')
+angular.module('freedomnation.controllers')
     .controller('EventDetailsCtrl', ['$scope', '$stateParams', '$cordovaBarcodeScanner', '$state', 'Podio', '$ionicLoading', 'event',function ($scope, $stateParams, $cordovaBarcodeScanner, $state,Podio, $ionicLoading,event) {
 
         console.log($cordovaBarcodeScanner);

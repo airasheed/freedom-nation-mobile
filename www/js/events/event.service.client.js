@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('freedomnation.services')
     .factory('EventService', function (Podio,$q,$http) {
 
         var newEvent = {};
