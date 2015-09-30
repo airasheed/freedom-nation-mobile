@@ -1,0 +1,13 @@
+<ion-view view-title="Attendees">
+    <ion-content>
+        <ion-list>
+            <ion-item class="item-remove-animate item-icon-right item-avatar" type="item-text-wrap"
+                      ng-repeat="attendee in attendees"
+                      ui-sref="tab.attendee-detail({eventId:eventId, attendeeId : attendee.id})">
+                <img ng-src="{{attendee.img.src}}"/>
+                <h2>{{attendee.name}}</h2>
+                <p>{{attendee.description | htmlToPlainText}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

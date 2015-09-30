@@ -1,0 +1,24 @@
+<ion-view view-title="Events" hide-back-button="true">
+    <ion-nav-title>
+        <img class="nav-bar-img" ng-src="img/logo.png" />
+    </ion-nav-title>
+    <ion-content>
+        <ion-list>
+            <ion-item class="item-remove-animate item-icon-right" type="item-text-wrap" ng-repeat="event in events"
+                      ui-sref="tab.event-detail({eventId:event.id})">
+
+                <div class="row">
+                    <div class="col">
+                        <div class="events-monht">{{event.date | date: 'MMM'}}</div>
+                        <div class="events-date">{{event.date | date: 'd'}}</div>
+                    </div>
+                    <div class="col col-80">
+                        <h2>{{event.name}}</h2>
+                        <p>{{event.description | htmlToPlainText}}</p>
+                    </div>
+                </div>
+
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

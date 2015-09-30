@@ -1,0 +1,43 @@
+<ion-view view-title="{{event.name}}">
+<ion-content>
+    <div id="event-img" style="background-image: url('{{event.img.src}}');"></div>
+    <div class="content-body">
+        <h2>{{event.name}}</h2>
+        <div class="row event-info-row">
+            <div class="col event-date">
+                <div class="month">{{event.date | date: 'MMM'}}</div>
+                <div class="day">{{event.date | date: 'd'}}</div>
+            </div>
+            <div class="col event-time">
+                <div>{{event.date | date: 'h:mm a'}}</div>
+            </div>
+            <div class="col event-price">
+                {{event.price | currency}}
+            </div>
+        </div>
+        <div>
+            <ion-scroll style="height: 100px;">
+                <p>{{event.description | htmlToPlainText}}</p>
+            </ion-scroll>
+        </div>
+    </div>
+</ion-content>
+<ion-footer-bar class="custom-footer-bar">
+    <div class="row">
+        <a class="button button-dark col" type="button"
+           ui-sref="tab.attendees({eventId: event.id, attendeeIds: event.attendees})" style="line-height: 46px;">See Attendees</a>
+        <!--<a class="button button-dark" href="#/tab/events/{{myEvent.id}}/attendees/076808533279">Add Attendees</a>-->
+        <button class="button button-dark col" ng-click="scanBarcode()" style="margin-left: 10px;">Add Attendee</button>
+    </div>
+</ion-footer-bar>
+<script id="my-modal.html" type="text/ng-template">para
+    <ion-modal-view>
+        <ion-header-bar>
+            <h1 class="title">My Modal title</h1>
+        </ion-header-bar>
+        <ion-content>
+            Hello!
+        </ion-content>
+    </ion-modal-view>
+</script>
+</ion-view>

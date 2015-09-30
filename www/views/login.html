@@ -1,0 +1,51 @@
+<ion-view view-title="Login" hide-back-button="true">
+    <ion-nav-title>
+        <img class="nav-bar-img" ng-src="img/logo.png"/>
+    </ion-nav-title>
+    <ion-content>
+        <div class="card">
+            <form name="authForm" ng-controller="authenticationFormCtrl" novalidate ng-submit="signIn(authForm)">
+            <div class="item item-divider ">
+                Login
+            </div>
+            <div class="item item-text-wrap">
+                    <label class="item item-input" ng-class="{'has-errors' : authForm.email.$invalid && authForm.$dirty, 'no-errors' :
+                authForm.email.$valid && authForm.$dirty}">
+                        <span class="input-label">Email</span>
+                        <input type="email" name="email" ng-model="auth.email" required/>
+                    </label>
+                    <div class="error-container" ng-show="authForm.email.$error && authForm.$dirty" ng-messages="authForm.email.$error">
+                        <div ng-messages-include="error-list.html"></div>
+                    </div>
+                    <label class="item item-input" ng-class="{'has-errors': authForm.password.$invalid && authForm.$submitted, 'no-errors': authForm.password.$valid && authForm.$submitted}">
+                        <span class="input-label">Password</span>
+                        <input type="password" name="password" ng-model="auth.password" required>
+                    </label>
+                    <div class="error-container last-error-container"
+                         ng-show="authForm.password.$error && authForm.$submitted" ng-messages="authForm.password.$error">
+                        <div ng-messages-include="error-list.html"></div>
+                    </div>
+            </div>
+            <div class="item item-divider">
+                    <input type="submit" value="Submit" class="button button-block"/>
+            </div>
+            </form>
+        </div>
+
+        <script id="error-list.html" type="text/ng-template">
+            <div class="error" ng-message="required">
+                <i class="ion-information-circled"></i>
+                This field is required!
+            </div>
+            <div class="error" ng-message="email">
+                <i class="ion-information-circled"></i>
+                Input Valid Email
+            </div>
+            <div class="error" ng-message="maxlength">
+                <i class="ion-information-circled"></i>
+                Maximum length of this field is 20 characters!
+            </div>
+        </script>
+
+    </ion-content>
+</ion-view>
