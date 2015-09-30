@@ -14,8 +14,6 @@ angular.module('freedomnation.controllers')
             showBackdrop: true
         });
 
-        var eventId = $stateParams.eventId;
-
         $scope.attendeeId = '';
         $scope.eventId = $stateParams.eventId;
 
@@ -39,14 +37,6 @@ angular.module('freedomnation.controllers')
                 $scope.attending = true;
             });
 
-
-        $scope.attendeeIdTest = 316650571;
-
-        $scope.doRefresh = function () {
-            console.log('Page refreshed');
-            $scope.$broadcast('scroll.refreshComplete');
-        };
-
         $scope.scanBarcode = function () {
 
             console.log('scanbar code here');
@@ -54,7 +44,7 @@ angular.module('freedomnation.controllers')
             $cordovaBarcodeScanner.scan()
                 .then(function (imageData) {
                     alert(imageData);
-                    /*if (imageData.text != null) {
+                    if (imageData.text != null) {
                      $state.go('tab.attendee-detail', {
                      eventId: $scope.eventId,
                      attendeeId: imageData.text
@@ -62,8 +52,7 @@ angular.module('freedomnation.controllers')
                      } else {
                      alert('Invalid Member');
                      $state.go('tab.event-detail', {eventId: $scope.eventId});
-
-                     }*/
+                     }
                 })
                 .catch(function (error) {
                     alert('An error occurred -> ' + error);
