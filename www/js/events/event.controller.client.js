@@ -24,7 +24,7 @@ angular.module('freedomnation.controllers')
                 $state.go('login');
             })
             .then(function() {
-                return event.getEvent(eventId);
+                return event.getEvent($scope.eventId);
             })
             .catch(function(error) {
                 console.log(error);
