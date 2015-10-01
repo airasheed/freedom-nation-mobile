@@ -1,5 +1,20 @@
-/* Empty. Add your own CSS if you like */
+/* Custom CSS
+ * Author: Abdullah Rasheed
+ */
 
+/*
+ * Global CSS
+ */
+.bar.bar-dark{
+    background:#231f20;
+}
+.custom-footer-bar{
+    height: 70px;
+}
+
+/*
+ * Attendee CSS
+ */
 .circleBase {
     border-radius: 50%;
     behavior: url(PIE.htc); /* remove if you don't care about IE8 */
@@ -50,6 +65,11 @@
     margin-right: 10px;
     padding-right: 17px;
 }
+
+/*
+ * Event CSS
+ */
+
 .content-body{
     padding: 15px;
 }
@@ -74,17 +94,7 @@
 .event-price{
     font-size: 20px;
 }
-.bar.bar-dark{
-    background:#231f20;
-}
 
-/*[nav-bar-transition="ios"] [nav-bar="active"] .bar, [nav-bar-transition="ios"] [nav-bar="entering"] .bar, [nav-bar-transition="android"] [nav-bar="active"] .bar, [nav-bar-transition="android"] [nav-bar="entering"] .bar
-{
-    background:#231f20;
-}*/
-.custom-footer-bar{
-    height: 70px;
-}
 .month {
     font-size: 30px;
     height: 40px;
@@ -105,7 +115,9 @@
 .events-day {
 
 }
-/*Form Styling*/
+/*
+ * Form Styling
+ */
 .error-container {
     margin: 5px 0;
 }
