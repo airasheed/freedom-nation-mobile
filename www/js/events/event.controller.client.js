@@ -5,7 +5,7 @@
  */
 
 angular.module('freedomnation.controllers')
-    .controller('EventDetailsCtrl', ['$scope', '$stateParams', '$cordovaBarcodeScanner', '$state', 'Podio', '$ionicLoading', 'event',function ($scope, $stateParams, $cordovaBarcodeScanner, $state,Podio, $ionicLoading,event) {
+    .controller('EventDetailsCtrl', ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state', 'Podio', '$ionicLoading', 'event',function ($scope,$cordovaBarcodeScanner, $stateParams, $state,Podio, $ionicLoading,event) {
 
 
         $ionicLoading.show({
