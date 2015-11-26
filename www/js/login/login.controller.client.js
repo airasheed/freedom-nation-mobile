@@ -22,7 +22,7 @@ angular.module('freedomnation.controllers')
             if(form.$valid) {
                 Podio.podio.authenticateWithCredentials(form.email.$modelValue, form.password.$modelValue, function (error) {
                     console.log(error);
-                    if (!error) {
+                    if (error) {
                         console.log(error);
                         $scope.showAlert()
                     } else {
