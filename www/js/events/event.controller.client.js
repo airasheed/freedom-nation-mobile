@@ -5,7 +5,7 @@
  */
 
 angular.module('freedomnation.controllers')
-    .controller('EventDetailsCtrl', ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state', 'Podio', '$ionicLoading', 'event',function ($scope,$cordovaBarcodeScanner, $stateParams, $state,Podio, $ionicLoading,event) {
+    .controller('EventDetailsCtrl', ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state', 'Podio', '$ionicLoading','event','attendee',function ($scope,$cordovaBarcodeScanner, $stateParams, $state,Podio, $ionicLoading,event,attendee) {
 
 
         $ionicLoading.show({
@@ -37,22 +37,24 @@ angular.module('freedomnation.controllers')
                 $scope.attending = true;
             });
 
+
         $scope.scanBarcode = function () {
 
-            console.log('scanbar code here');
-
+            //Scanbarcode
             $cordovaBarcodeScanner.scan()
                 .then(function (imageData) {
-                    alert(imageData);
-                    if (imageData.text != null) {
-                     $state.go('tab.attendee-detail', {
-                     eventId: $scope.eventId,
-                     attendeeId: imageData.text
-                     });
-                     } else {
-                     alert('Invalid Member');
-                     $state.go('tab.event-detail', {eventId: $scope.eventId});
-                     }
+                    attendee.getAttendeeByBarcode(imageData.text)
+                        .then(function(response) {
+                            $state.go('tab.attendee-detail',
+                                {
+                                    eventId: $scope.eventId,
+                                    attendeeId: response.id,
+                                    attending: false
+                                });
+                        })
+                        .catch(function(error) {
+                            alert(error);
+                        });
                 })
                 .catch(function (error) {
                     alert('An error occurred -> ' + error);

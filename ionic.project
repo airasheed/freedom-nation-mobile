@@ -1,4 +1,5 @@
 {
   "name": "freedomnationClient",
-  "app_id": "4d37004b"
+  "app_id": "4d37004b",
+  "defaultBrowser": "chrome"
 }

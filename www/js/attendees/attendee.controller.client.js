@@ -17,8 +17,10 @@ angular.module('freedomnation.controllers')
 
         var eventId = $stateParams.eventId,
             attendeeId = $stateParams.attendeeId;
-
-
+        $scope.attending = true;
+        if($stateParams.attending == false) {
+            $scope.attending = false;
+        }
         Podio.podio.isAuthenticated()
             .catch(function() {
                 $ionicLoading.hide();
@@ -37,11 +39,7 @@ angular.module('freedomnation.controllers')
                 $ionicLoading.hide();
             });
 
-        $scope.attending = true;
 
-        if($stateParams.attending == false) {
-            $scope.attending = false;
-        }
 
         $scope.addToEvent = function () {
             $ionicLoading.show({

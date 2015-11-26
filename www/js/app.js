@@ -75,6 +75,9 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
             resolve: {
               event : function(EventService) {
                 return EventService;
+              },
+              attendee : function(AttendeeService) {
+                return AttendeeService;
               }
             }
           }
@@ -120,7 +123,8 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
       })
       .state('login', {
         url: '/login',
-        templateUrl: 'views/login.html'
+        templateUrl: 'views/login.html',
+        controller: 'authenticationFormCtrl'
       });
 
       $urlRouterProvider.otherwise('/tab/events');
