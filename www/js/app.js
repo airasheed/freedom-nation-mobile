@@ -16,6 +16,8 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
         $http.defaults.headers.common['Authorization'] = 'OAuth2 ' + token.accessToken;
       });
 
+
+
       $rootScope.$state = $state;
       $rootScope.$stateParams = $stateParams;
 

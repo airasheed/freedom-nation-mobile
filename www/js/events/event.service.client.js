@@ -76,59 +76,61 @@ angular.module('freedomnation.services')
         };
 
 
+        /*
+         * Get a single event
+         * @param {String} eventId - Id of the event
+         * @returns {Object} Returns a promise with event information
+         */
+        var getEvent = function(eventId) {
+            var deferred = $q.defer();
+
+            Podio.podio.request('get', '/item/' + eventId)
+                .then(function (responseEvent) {
+                    newEvent = arrangeEvent(responseEvent);
+                    return newEvent.img.file_id;
+                })
+                .then(function(imgId) {
+                    return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
+                }).then(function(response) {
+                    newEvent.img.src = utils.convertDataUrl(response);
+                    deferred.resolve(newEvent);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+            return deferred.promise;
+        };
+
+        /*
+         * Get multiple events
+         * @returns {Object} Returns a promise with event information
+         */
+        var getEvents =  function () {
+
+            var deferred = $q.defer();
+
+            Podio.podio.request('post', '/item/app/11602319/filter')
+                .then(function (response) {
+
+                    var responseEvents = response.items;
+
+                    for (var i = 0, n = responseEvents.length; i < n; i++) {
+                        newEvents.push(arrangeEvent(responseEvents[i]));
+                    }
+
+                    deferred.resolve(newEvents);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+
+            return deferred.promise;
+        };
+
         return {
 
-
-            /*
-             * Get a single event
-             * @param {String} eventId - Id of the event
-             * @returns {Object} Returns a promise with event information
-             */
-             getEvent: function(eventId) {
-                 var deferred = $q.defer();
-
-                 Podio.podio.request('get', '/item/' + eventId)
-                     .then(function (responseEvent) {
-                         newEvent = arrangeEvent(responseEvent);
-                         return newEvent.img.file_id;
-                     })
-                     .then(function(imgId) {
-                         return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
-                     }).then(function(response) {
-                         newEvent.img.src = utils.convertDataUrl(response);
-                         deferred.resolve(newEvent);
-                     })
-                     .catch(function(error) {
-                         console.log(error);
-                     });
-                 return deferred.promise;
-             },
-
-            /*
-             * Get multiple events
-             * @returns {Object} Returns a promise with event information
-             */
-            getEvents: function () {
-
-                var deferred = $q.defer();
-
-                Podio.podio.request('post', '/item/app/11602319/filter')
-                    .then(function (response) {
-
-                        var responseEvents = response.items;
-
-                        for (var i = 0, n = responseEvents.length; i < n; i++) {
-                            newEvents.push(arrangeEvent(responseEvents[i]));
-                        }
-
-                        deferred.resolve(newEvents);
-                    })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
-
-                return deferred.promise;
-            }
+            getEvents : getEvents,
+            getEvent : getEvent
         }
 
 
