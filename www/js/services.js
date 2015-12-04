@@ -45,7 +45,7 @@ angular.module('freedomnation.services', [])
     }])
     .factory('utils', function () {
       return {
-        convertDataUrl: function(rawImg) {
+        convertDataUrl: function (rawImg) {
           var raw = '',
               bytes = new Uint8Array(rawImg.data),
               length = bytes.length;
@@ -60,5 +60,11 @@ angular.module('freedomnation.services', [])
         }
       }
 
+    })
+    .factory('fnCache', function ($cacheFactory) {
+      /*
+      * Main Cache Object
+      * */
+      return $cacheFactory('fnCache');
     });
 

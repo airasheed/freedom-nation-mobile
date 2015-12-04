@@ -62,7 +62,7 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
         controller: 'EventsCtrl',
         resolve: {
           events: function (EventService) {
-            return EventService;
+            return EventService.getEvents();
           }
         }
       }
@@ -75,8 +75,9 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
             templateUrl: 'views/event.html',
             controller: 'EventDetailsCtrl',
             resolve: {
-              event : function(EventService) {
-                return EventService;
+              event : function(EventService,$stateParams) {
+
+                return EventService.getEvent($stateParams.eventId);
               },
               attendee : function(AttendeeService) {
                 return AttendeeService;
@@ -93,8 +94,15 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
             templateUrl: 'views/attendees.html',
             controller: 'AttendeesCtrl',
             resolve: {
-              attendees : function(AttendeeService) {
-                return AttendeeService;
+              attendees : function(AttendeeService,$stateParams) {
+                var attendeeIds = $stateParams.attendeeIds;
+                if(attendeeIds) {
+                  attendeeIds = JSON.parse(attendeeIds);
+                  var eventId = $stateParams.eventId;
+                  return AttendeeService.getAttendees(attendeeIds, eventId);
+                }else {
+                  return undefined;
+                }
               }
             }
           }
@@ -111,8 +119,8 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
             templateUrl: 'views/attendee.html',
             controller: 'AttendeeDetailCtrl',
             resolve: {
-              attendee : function(AttendeeService) {
-                return AttendeeService;
+              attendee : function(AttendeeService,$stateParams) {
+                return AttendeeService.getAttendee($stateParams.attendeeId);
               }
             }
           }

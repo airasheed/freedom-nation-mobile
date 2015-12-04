@@ -9,7 +9,7 @@
  */
 
 angular.module('freedomnation.services')
-    .factory('AttendeeService', ['Podio', '$q', '$http', 'utils', function (Podio,$q,$http,utils) {
+    .factory('AttendeeService', ['Podio', '$q', '$http', 'utils','fnCache', function (Podio,$q,$http,utils,fnCache) {
 
         var newAttendee = {},
             newAttendees = [],
@@ -124,139 +124,162 @@ angular.module('freedomnation.services')
             return tempArray;
         };
 
+        /*
+         * Get a Multiple Attendees
+         * @param {Array} attendeeIds - Attendee Ids
+         * @returns {Object} Returns a promise with event information
+         */
 
-        return {
+        var getAttendees = function(attendeeIds,eventId) {
 
-            /*
-             * Get a Multiple Attendees
-             * @param {Array} attendeeIds - Attendee Ids
-             * @returns {Object} Returns a promise with event information
-             */
 
-            getAttendees: function(attendeeIds) {
-
-                var attendees = $q.defer();
-
-                var requestData = {
-                    "filters" : {
-                        "item_id" : attendeeIds
-                    }
-                };
-
-                Podio.podio.request('post', '/item/app/10462146/filter', requestData)
-                    .then(function (response) {
-                        newAttendees = arrangeAttendees(response);
-
-                        for(var i = 0; i < newAttendees.length; i++) {
-                            //capture value of i with IIFE
-                            (function (j) {
-                                $http.get(fileAPIUrl + newAttendees[j].img.file_id
-                                    + '/raw',{responseType:'arraybuffer'})
-                                    .then(function(response) {
-                                        newAttendees[j].img.src = utils.convertDataUrl(response);
-                                    })
-                                    .catch(function(error) {
-                                        console.log('for loop response: ', error);
-                                    }).then(function() {
-
-                                    })
-                            })(i);
-                        }
-                        attendees.resolve(newAttendees);
-                    })
-                    .catch(function(error) {
-                        console.log(error)
-                    });
-
+            var attendees = $q.defer();
+            var requestData = {
+                "filters" : {
+                    "item_id" : attendeeIds
+                }
+            };
+            var cache = fnCache.get('attendees:' + eventId);
+            //If object cached
+            if(cache) {
+                attendees.resolve(cache);
                 return attendees.promise;
+            }
+            //Object not cached
+            Podio.podio.request('post', '/item/app/10462146/filter', requestData)
+                .then(function (response) {
+                    newAttendees = arrangeAttendees(response);
 
-            },
+                    for(var i = 0; i < newAttendees.length; i++) {
+                        //capture value of i with IIFE
+                        (function (j) {
+                            $http.get(fileAPIUrl + newAttendees[j].img.file_id
+                                + '/raw',{responseType:'arraybuffer'})
+                                .then(function(response) {
+                                    newAttendees[j].img.src = utils.convertDataUrl(response);
+                                })
+                                .catch(function(error) {
+                                    console.log('for loop response: ', error);
+                                }).then(function() {
+
+                                })
+                        })(i);
+                    }
+                    fnCache.put('attendees:' + eventId, newAttendees);
+                    attendees.resolve(newAttendees);
+                })
+                .catch(function(error) {
+                    console.log(error)
+                });
+
+            return attendees.promise;
+
+        }
+
+        /*
+         * Get Single Attendee
+         * @params: attendeeId
+         *
+         * */
+
+        var getAttendee = function (attendeeId) {
+
+            var attendee = $q.defer();
+            var cache = fnCache.get(attendeeId);
 
             /*
-            * Get Single Attendee
-            * @params: attendeeId
-            *
-            * */
-
-
-            getAttendee: function (attendeeId) {
-                var attendee = $q.defer();
-
-                Podio.podio.request('get', '/item/' + attendeeId)
-                    .then(function (responseEvent) {
-                        newAttendee = arrangeAttendee(responseEvent);
-                        return newAttendee.img.file_id;
-                    })
-                    .then(function(imgId) {
-                        return $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'});
-                    }).then(function(response) {
-                        newAttendee.img.src = utils.convertDataUrl(response);
-                        attendee.resolve(newAttendee);
-
-                    })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
+             * Check for cached object
+             * */
+            if(cache) {
+                console.log('it was cached');
+                attendee.resolve(cache);
                 return attendee.promise;
-            },
+            }
+            //If no cached object was found make request to podio
+            Podio.podio.request('get', '/item/' + attendeeId)
+                .then(function (responseEvent) {
+                    newAttendee = arrangeAttendee(responseEvent);
+                    return newAttendee.img.file_id;
+                })
+                .then(function(imgId) {
+                    return $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'});
+                }).then(function(response) {
+                    newAttendee.img.src = utils.convertDataUrl(response);
+                    fnCache.put(attendeeId, newAttendee);
+                    attendee.resolve(newAttendee);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+            return attendee.promise;
+        };
 
-            getAttendeeByBarcode: function (barcode) {
-                var attendee = $q.defer();
+        var getAttendeeByBarcode = function (barcode) {
+            var attendee = $q.defer();
 
-                var requestData = {
-                    "filters" : {
-                        "barcode-2" : barcode
-                    }
-                };
+            var requestData = {
+                "filters" : {
+                    "barcode-2" : barcode
+                }
+            };
 
-                Podio.podio.request('post', '/item/app/10462146/filter', requestData)
-                    .then(function (responseEvent) {
-                        newAttendee = arrangeAttendee(responseEvent.items[0]);
-                        return newAttendee.img.file_id;
-                    })
-                    .then(function(imgId) {
-                        return $http.get(fileAPIUrl+ imgId + '/raw', {responseType: 'arraybuffer'});
-                    }).then(function(response) {
-                        newAttendee.img.src = utils.convertDataUrl(response);
-                        attendee.resolve(newAttendee);
-                    })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
-                return attendee.promise;
-            },
+            Podio.podio.request('post', '/item/app/10462146/filter', requestData)
+                .then(function (responseEvent) {
+                    newAttendee = arrangeAttendee(responseEvent.items[0]);
+                    return newAttendee.img.file_id;
+                })
+                .then(function(imgId) {
+                    return $http.get(fileAPIUrl+ imgId + '/raw', {responseType: 'arraybuffer'});
+                }).then(function(response) {
+                    newAttendee.img.src = utils.convertDataUrl(response);
+                    attendee.resolve(newAttendee);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+            return attendee.promise;
+        };
 
-            getImg: function(imgId) {
-                var qImgUrl = $q.defer();
+        var getImg = function(imgId) {
+            var qImgUrl = $q.defer();
 
-                $http.get(fileAPIUrl + imgId+ '/raw',{responseType:'arraybuffer'})
-                .then(function(response) {
+            $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'})
+                .then(function (response) {
                     var dataUrl = utils.convertDataUrl(response);
                     qImgUrl.resolve(dataURL);
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.log(error);
                 });
 
-                return qImgUrl.promise;
-            },
+            return qImgUrl.promise;
+        };
 
-            /*
-            * Add to Event
-            * @params: eventId, attendeeId
-            * */
+        /*
+         * Add to Event
+         * @params: eventId, attendeeId
+         * */
 
-            addToEvent: function(eventId,attendeeId) {
+        var addToEvent = function(eventId,attendeeId) {
 
-                var requestData = {
-                    fields: {
-                        "attendees" : parseInt(attendeeId)
-                    } //must parse string into integer
-                };
+            var requestData = {
+                fields: {
+                    "attendees" : parseInt(attendeeId)
+                } //must parse string into integer
+            };
 
-                return Podio.podio.request('put', '/item/' + eventId, requestData)
-                    .catch(function(error) {
-                        console.log(error);
-                    });
-            }
+            return Podio.podio.request('put', '/item/' + eventId, requestData)
+                .catch(function(error) {
+                    console.log(error);
+                });
+        };
+
+        return {
+
+            getAttendees : getAttendees,
+            getAttendee : getAttendee,
+            getAttendeeByBarcode : getAttendeeByBarcode,
+            getImg : getImg,
+            addToEvent : addToEvent
+
         };
     }]);

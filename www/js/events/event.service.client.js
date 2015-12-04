@@ -9,7 +9,7 @@
  */
 
 angular.module('freedomnation.services')
-    .factory('EventService', ['Podio','$q', '$http', 'utils', function (Podio,$q,$http,utils) {
+    .factory('EventService', ['Podio','$q', '$http', 'utils','fnCache', function (Podio,$q,$http,utils,fnCache) {
 
         var newEvent = {},
             newEvents = [],
@@ -83,22 +83,32 @@ angular.module('freedomnation.services')
          */
         var getEvent = function(eventId) {
             var deferred = $q.defer();
+            var cache = fnCache.get(eventId);
 
-            Podio.podio.request('get', '/item/' + eventId)
-                .then(function (responseEvent) {
-                    newEvent = arrangeEvent(responseEvent);
-                    return newEvent.img.file_id;
-                })
-                .then(function(imgId) {
-                    return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
-                }).then(function(response) {
-                    newEvent.img.src = utils.convertDataUrl(response);
-                    deferred.resolve(newEvent);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-            return deferred.promise;
+            if(cache) {
+                deferred.resolve(cache);
+                return deferred.promise;
+            }else{
+                Podio.podio.request('get', '/item/' + eventId)
+                    .then(function (responseEvent) {
+                        newEvent = arrangeEvent(responseEvent);
+                        return newEvent.img.file_id;
+                    })
+                    .then(function(imgId) {
+                        return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
+                    }).then(function(response) {
+                        newEvent.img.src = utils.convertDataUrl(response);
+                        fnCache.put(eventId, newEvent);
+                        deferred.resolve(newEvent);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+                return deferred.promise;
+            }
+
+
+
         };
 
         /*
@@ -107,25 +117,32 @@ angular.module('freedomnation.services')
          */
         var getEvents =  function () {
 
+
             var deferred = $q.defer();
+            var cache = fnCache.get('allEvents');
+            if(cache){
+                deferred.resolve(cache);
+                return deferred.promise;
+            }else{
+                Podio.podio.request('post', '/item/app/11602319/filter')
+                    .then(function (response) {
 
-            Podio.podio.request('post', '/item/app/11602319/filter')
-                .then(function (response) {
+                        var responseEvents = response.items;
 
-                    var responseEvents = response.items;
+                        for (var i = 0, n = responseEvents.length; i < n; i++) {
+                            newEvents.push(arrangeEvent(responseEvents[i]));
+                        }
+                        fnCache.put('allEvents', newEvents);
+                        deferred.resolve(newEvents);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
 
-                    for (var i = 0, n = responseEvents.length; i < n; i++) {
-                        newEvents.push(arrangeEvent(responseEvents[i]));
-                    }
+                return deferred.promise;
+            };
+            }
 
-                    deferred.resolve(newEvents);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-
-            return deferred.promise;
-        };
 
         return {
 

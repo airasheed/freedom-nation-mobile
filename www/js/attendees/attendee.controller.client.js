@@ -27,13 +27,7 @@ angular.module('freedomnation.controllers')
                 $state.go('login');
             })
             .then(function() {
-            return attendee.getAttendee(attendeeId);
-            })
-            .catch(function(error) {
-                console.log(error);
-            })
-            .then(function(data) {
-                $scope.attendee = data;
+                $scope.attendee = attendee;
             })
             .then(function() {
                 $ionicLoading.hide();

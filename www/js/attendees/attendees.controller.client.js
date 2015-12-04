@@ -12,13 +12,6 @@ angular.module('freedomnation.controllers')
             showBackdrop: true
         });
 
-
-        $scope.eventId = $stateParams.eventId;
-
-        if($stateParams.attendeeIds !== undefined) {
-
-            var attendeeIds = JSON.parse($stateParams.attendeeIds);
-
             Podio.podio.isAuthenticated()
                 .catch(function(error) {
                     $state.go('login');
@@ -26,21 +19,11 @@ angular.module('freedomnation.controllers')
                     console.log(error);
                 })
                 .then(function() {
-                    return attendees.getAttendees(attendeeIds);
-                }).
-                then(function(response) {
-                    $scope.attendees = response;
+                    $scope.attendees = attendees;
 
                 }).then(function () {
                 $ionicLoading.hide();
             });
-        } else {
-            $ionicLoading.hide()
-        }
-
-
-
-
 
     }]
 );
