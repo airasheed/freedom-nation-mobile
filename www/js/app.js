@@ -8,14 +8,13 @@
 
 angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnation.controllers', 'freedomnation.services','freedomnation.filters'])
 
-.run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage) {
+.run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,Podio) {
 
       /*
       * Local Storage Object Used*/
       $localstorage.get('password', function (token) {
         $http.defaults.headers.common['Authorization'] = 'OAuth2 ' + token.accessToken;
       });
-
 
 
       $rootScope.$state = $state;
@@ -36,6 +35,7 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
 
     }
   });
+
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -76,7 +76,6 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
             controller: 'EventDetailsCtrl',
             resolve: {
               event : function(EventService,$stateParams) {
-
                 return EventService.getEvent($stateParams.eventId);
               },
               attendee : function(AttendeeService) {
@@ -137,6 +136,6 @@ angular.module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnati
         controller: 'authenticationFormCtrl'
       });
 
-      $urlRouterProvider.otherwise('/tab/events');
+      $urlRouterProvider.otherwise('/login');
 
 });

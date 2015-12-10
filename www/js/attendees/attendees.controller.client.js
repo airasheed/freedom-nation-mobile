@@ -20,8 +20,6 @@ angular.module('freedomnation.controllers')
                 })
                 .then(function() {
                     $scope.attendees = attendees;
-
-                }).then(function () {
                 $ionicLoading.hide();
             });
 

@@ -22,12 +22,23 @@ angular.module('freedomnation.services')
             img: 80911195
         };
 
+        var service = {
+            getAttendees : getAttendees,
+            getAttendee : getAttendee,
+            getAttendeeByBarcode : getAttendeeByBarcode,
+            getImg : getImg,
+            addToEvent : addToEvent
+        };
+
+        return service;
+
+
         /*
          * Arrange Attendee data for exposing to the model
          * @param {Object} Promise Response Object
          * @returns {Object} Rearranged attendee information based upon citizen field ids
          */
-        var arrangeAttendee = function(responseEvent) {
+        function arrangeAttendee(responseEvent) {
             var att = {};
             var fields = responseEvent.fields;
             att.id = responseEvent.item_id;
@@ -68,7 +79,7 @@ angular.module('freedomnation.services')
             }
 
             return att;
-        };
+        }
 
         /*
          * Arrange Attendees data for exposing to the model
@@ -76,7 +87,7 @@ angular.module('freedomnation.services')
          * @returns {Object} Rearranged attendee information based upon citizen field ids
          */
 
-        var arrangeAttendees = function(response) {
+        function arrangeAttendees(response) {
 
             var tempArray = [];
             var tempItems = response.items;
@@ -122,7 +133,7 @@ angular.module('freedomnation.services')
                 tempArray.push(att);
             }
             return tempArray;
-        };
+        }
 
         /*
          * Get a Multiple Attendees
@@ -130,7 +141,7 @@ angular.module('freedomnation.services')
          * @returns {Object} Returns a promise with event information
          */
 
-        var getAttendees = function(attendeeIds,eventId) {
+        function getAttendees(attendeeIds,eventId) {
 
 
             var attendees = $q.defer();
@@ -182,7 +193,7 @@ angular.module('freedomnation.services')
          *
          * */
 
-        var getAttendee = function (attendeeId) {
+        function getAttendee (attendeeId) {
 
             var attendee = $q.defer();
             var cache = fnCache.get(attendeeId);
@@ -212,9 +223,9 @@ angular.module('freedomnation.services')
                     console.log(error);
                 });
             return attendee.promise;
-        };
+        }
 
-        var getAttendeeByBarcode = function (barcode) {
+        function getAttendeeByBarcode(barcode) {
             var attendee = $q.defer();
 
             var requestData = {
@@ -238,9 +249,9 @@ angular.module('freedomnation.services')
                     console.log(error);
                 });
             return attendee.promise;
-        };
+        }
 
-        var getImg = function(imgId) {
+        function getImg(imgId) {
             var qImgUrl = $q.defer();
 
             $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'})
@@ -252,14 +263,14 @@ angular.module('freedomnation.services')
                 });
 
             return qImgUrl.promise;
-        };
+        }
 
         /*
          * Add to Event
          * @params: eventId, attendeeId
          * */
 
-        var addToEvent = function(eventId,attendeeId) {
+        function addToEvent(eventId,attendeeId) {
 
             var requestData = {
                 fields: {
@@ -271,15 +282,5 @@ angular.module('freedomnation.services')
                 .catch(function(error) {
                     console.log(error);
                 });
-        };
-
-        return {
-
-            getAttendees : getAttendees,
-            getAttendee : getAttendee,
-            getAttendeeByBarcode : getAttendeeByBarcode,
-            getImg : getImg,
-            addToEvent : addToEvent
-
-        };
+        }
     }]);

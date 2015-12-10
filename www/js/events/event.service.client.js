@@ -21,6 +21,14 @@ angular.module('freedomnation.services')
             desc: 89107344,
             img: 89107348
         };
+        var service = {
+            getEvent: getEvent,
+            getEvents: getEvents
+
+        };
+
+        return service;
+
 
         /*
          * Arrange Event Data for exposing to the model
@@ -28,7 +36,7 @@ angular.module('freedomnation.services')
          * @returns {Object} Rearranged event information based upon event field ids
          */
 
-        var arrangeEvent = function(responseEvent) {
+        function arrangeEvent(responseEvent) {
 
             var fields = responseEvent.fields;
             var newEvent = {};
@@ -81,7 +89,7 @@ angular.module('freedomnation.services')
          * @param {String} eventId - Id of the event
          * @returns {Object} Returns a promise with event information
          */
-        var getEvent = function(eventId) {
+        function getEvent(eventId) {
             var deferred = $q.defer();
             var cache = fnCache.get(eventId);
 
@@ -115,7 +123,7 @@ angular.module('freedomnation.services')
          * Get multiple events
          * @returns {Object} Returns a promise with event information
          */
-        var getEvents =  function () {
+        function getEvents() {
 
 
             var deferred = $q.defer();
@@ -142,14 +150,5 @@ angular.module('freedomnation.services')
                 return deferred.promise;
             };
             }
-
-
-        return {
-
-            getEvents : getEvents,
-            getEvent : getEvent
-        }
-
-
 
     }]);

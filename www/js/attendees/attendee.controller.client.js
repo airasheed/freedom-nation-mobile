@@ -18,6 +18,8 @@ angular.module('freedomnation.controllers')
         var eventId = $stateParams.eventId,
             attendeeId = $stateParams.attendeeId;
         $scope.attending = true;
+        $scope.addToEvent = addToEvent;
+
         if($stateParams.attending == false) {
             $scope.attending = false;
         }
@@ -28,14 +30,12 @@ angular.module('freedomnation.controllers')
             })
             .then(function() {
                 $scope.attendee = attendee;
-            })
-            .then(function() {
                 $ionicLoading.hide();
             });
 
 
 
-        $scope.addToEvent = function () {
+         function addToEvent () {
             $ionicLoading.show({
                 content: 'Loading',
                 animation: 'fade-in',

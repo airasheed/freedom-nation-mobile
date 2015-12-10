@@ -16,7 +16,7 @@ angular.module('freedomnation.controllers')
 
         $scope.attendeeId = '';
         $scope.eventId = $stateParams.eventId;
-
+        $scope.scanBarcode = scanBarcode; //bindable function
 
         Podio.podio.isAuthenticated()
             .catch(function() {
@@ -32,7 +32,7 @@ angular.module('freedomnation.controllers')
             });
 
 
-        $scope.scanBarcode = function () {
+        function scanBarcode () {
 
             //Scanbarcode
             $cordovaBarcodeScanner.scan()
