@@ -7,9 +7,13 @@
      * - exposes the model to the template
      */
 
-    angular.module('freedomnation.controllers')
-        .controller('EventsCtrl', ['$scope','Podio', '$ionicLoading', 'events', '$state', function ($scope, Podio, $ionicLoading,events,$state) {
+    angular
+        .module('freedomnation.controllers')
+        .controller('EventsController', EventsController);
 
+        EventsController.$inject = ['$scope','Podio', '$ionicLoading', 'events', '$state'];
+
+        function EventsController ($scope, Podio, $ionicLoading,events,$state) {
 
             $ionicLoading.show({
                 content: 'Loading',
@@ -31,7 +35,7 @@
                 })
 
 
-        }]);
+        }
 
 }
 )();

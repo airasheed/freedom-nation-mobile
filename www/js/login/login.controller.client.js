@@ -1,24 +1,36 @@
-angular.module('freedomnation.controllers')
-    .controller('authenticationFormCtrl', ['$scope', '$state','Podio', '$ionicPopup', function ($scope,$state,Podio, $ionicPopup) {
+(function () {
+
+    'use strict'
+
+    angular
+        .module('freedomnation.controllers')
+        .controller('LoginController',LoginController);
+
+
+    LoginController.$inject = ['$scope', '$state','Podio', '$ionicPopup'];
+
+
+    function LoginController ($scope,$state,Podio, $ionicPopup) {
 
         /*
-        * Initialize Login Info
-        * */
-        $scope.auth = {
-            email: '',
-            password: ''
-        };
+         * Initialize Login Info
+         * */
+        $scope.auth = { email: '', password: ''};
+        $scope.signIn = signIn;
+        $scope.showAlert = showAlert;
 
         Podio.podio.isAuthenticated()
-            .then(function () {
-                $state.go('tab.events');
-            });
+        .then(function () {
+            $state.go('tab.events');
+        });
+
+
 
         /*
-        * Sign-in Behavior
-        * @param {Object} Form Object
-        */
-        $scope.signIn = function(form) {
+         * Sign-in Behavior
+         * @param {Object} Form Object
+         */
+        function signIn(form) {
             if(form.$valid) {
                 Podio.podio.authenticateWithCredentials(form.email.$modelValue, form.password.$modelValue, function (error) {
                     console.log(error);
@@ -40,7 +52,7 @@ angular.module('freedomnation.controllers')
         /*
          * Login Error Alert Function
          */
-        $scope.showAlert = function() {
+        function showAlert () {
             var alertPopup = $ionicPopup.alert({
                 title: 'Login Unsuccesful!',
                 cssClass: 'login-alert',
@@ -48,5 +60,5 @@ angular.module('freedomnation.controllers')
                 okType: 'button-dark'
             });
         }
-    }]);
-
+        }
+})();
