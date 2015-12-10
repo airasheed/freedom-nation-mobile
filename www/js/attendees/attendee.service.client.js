@@ -12,12 +12,13 @@
      * model.
      */
 
-    angular.module('freedomnation.services')
+    angular
+        .module('app.attendees')
         .factory('AttendeeService', AttendeeService);
 
-    AttendeeService.$inject = ['Podio', '$q', '$http', 'utils','fnCache'];
+    AttendeeService.$inject = ['Podio', '$q', '$http', 'utilsService','fnCache'];
 
-    function AttendeeService (Podio,$q,$http,utils,fnCache) {
+    function AttendeeService (Podio,$q,$http,utilsService,fnCache) {
 
             var newAttendee = {},
                 newAttendees = [],
@@ -175,7 +176,7 @@
                                 $http.get(fileAPIUrl + newAttendees[j].img.file_id
                                     + '/raw',{responseType:'arraybuffer'})
                                     .then(function(response) {
-                                        newAttendees[j].img.src = utils.convertDataUrl(response);
+                                        newAttendees[j].img.src = utilsService.convertDataUrl(response);
                                     })
                                     .catch(function(error) {
                                         console.log('for loop response: ', error);
@@ -223,7 +224,7 @@
                     .then(function(imgId) {
                         return $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'});
                     }).then(function(response) {
-                        newAttendee.img.src = utils.convertDataUrl(response);
+                        newAttendee.img.src = utilsService.convertDataUrl(response);
                         fnCache.put(attendeeId, newAttendee);
                         attendee.resolve(newAttendee);
                     })
@@ -250,7 +251,7 @@
                     .then(function(imgId) {
                         return $http.get(fileAPIUrl+ imgId + '/raw', {responseType: 'arraybuffer'});
                     }).then(function(response) {
-                        newAttendee.img.src = utils.convertDataUrl(response);
+                        newAttendee.img.src = utilsService.convertDataUrl(response);
                         attendee.resolve(newAttendee);
                     })
                     .catch(function(error) {
@@ -264,7 +265,7 @@
 
                 $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'})
                     .then(function (response) {
-                        var dataUrl = utils.convertDataUrl(response);
+                        var dataUrl = utilsService.convertDataUrl(response);
                         qImgUrl.resolve(dataURL);
                     }).catch(function (error) {
                         console.log(error);

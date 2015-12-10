@@ -8,7 +8,7 @@
      */
 
     angular
-        .module('freedomnation.controllers')
+        .module('app.events')
         .controller('EventsController', EventsController);
 
         EventsController.$inject = ['$scope','Podio', '$ionicLoading', 'events', '$state'];

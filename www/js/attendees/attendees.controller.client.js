@@ -8,7 +8,7 @@
      * - exposes the model to the template
      */
     angular
-        .module('freedomnation.controllers')
+        .module('app.attendees')
         .controller('AttendeesController', AttendeesController);
 
     AttendeesController.$inject = ['$scope','Podio','$ionicLoading','$state','attendees'];

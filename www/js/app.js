@@ -12,9 +12,15 @@
      */
 
     angular
-        .module('freedomnation', ['ionic', 'ngCordova','ngMessages', 'freedomnation.controllers', 'freedomnation.services','freedomnation.filters'])
+        .module('app', ['ionic',
+            'ngCordova',
+            'ngMessages',
+            'app.events',
+            'app.attendees',
+            'app.filters',
+            'app.login'])
 
-        .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,Podio) {
+        .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage) {
 
             /*
              * Local Storage Object Used*/
@@ -97,7 +103,7 @@
                     views: {
                         'tab-event':{
                             templateUrl: 'views/attendees.html',
-                            controller: 'AttendeesCtrl',
+                            controller: 'AttendeesController',
                             resolve: {
                                 attendees : function(AttendeeService,$stateParams) {
                                     var attendeeIds = $stateParams.attendeeIds;
@@ -142,7 +148,7 @@
                     controller: 'LoginController'
                 });
 
-            $urlRouterProvider.otherwise('/login');
+            $urlRouterProvider.otherwise('/tab/events');
 
         });
 

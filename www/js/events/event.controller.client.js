@@ -9,7 +9,7 @@
      */
 
     angular
-        .module('freedomnation.controllers')
+        .module('app.events')
         .controller('EventController',EventController);
 
     EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state', 'Podio', '$ionicLoading','event','attendee'];

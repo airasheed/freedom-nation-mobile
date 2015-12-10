@@ -3,8 +3,8 @@
     'use strict'
 
     angular
-        .module('freedomnation.controllers')
-        .controller('LoginController',LoginController);
+        .module('app.login')
+        .controller('LoginController', LoginController);
 
 
     LoginController.$inject = ['$scope', '$state','Podio', '$ionicPopup'];
@@ -21,6 +21,7 @@
 
         Podio.podio.isAuthenticated()
         .then(function () {
+                console.log('im here');
             $state.go('tab.events');
         });
 
@@ -46,7 +47,7 @@
                 console.log('Form Invalid');
             }
 
-        };
+        }
 
 
         /*
@@ -60,5 +61,5 @@
                 okType: 'button-dark'
             });
         }
-        }
+    }
 })();

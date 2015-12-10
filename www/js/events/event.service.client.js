@@ -13,13 +13,13 @@
      */
 
     angular
-        .module('freedomnation.services')
+        .module('app.events')
         .factory('EventService',EventService);
 
 
-    EventService.$inject = ['Podio','$q', '$http', 'utils','fnCache'];
+    EventService.$inject = ['Podio','$q', '$http', 'utilsService','fnCache'];
 
-    function EventService (Podio,$q,$http,utils,fnCache) {
+    function EventService (Podio,$q,$http,utilsService,fnCache) {
 
             var newEvent = {},
                 newEvents = [],
@@ -91,7 +91,7 @@
                 }
 
                 return newEvent;
-            };
+            }
 
 
             /*
@@ -115,7 +115,7 @@
                         .then(function(imgId) {
                             return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
                         }).then(function(response) {
-                            newEvent.img.src = utils.convertDataUrl(response);
+                            newEvent.img.src = utilsService.convertDataUrl(response);
                             fnCache.put(eventId, newEvent);
                             deferred.resolve(newEvent);
                         })
@@ -127,7 +127,7 @@
 
 
 
-            };
+            }
 
             /*
              * Get multiple events

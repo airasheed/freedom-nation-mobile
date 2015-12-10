@@ -10,7 +10,7 @@
      */
 
     angular
-        .module('freedomnation.controllers')
+        .module('app.attendees')
         .controller('AttendeeController', AttendeeController);
 
     AttendeeController.$inject =  ['$scope', '$state', '$stateParams', 'Podio', '$ionicLoading','attendee','$ionicPopup','$ionicHistory'];
@@ -68,7 +68,7 @@
                     .catch(function(error) {
                         console.log(error);
                     })
-            };
+            }
 
         }
 
