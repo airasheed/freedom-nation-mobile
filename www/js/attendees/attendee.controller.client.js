@@ -13,30 +13,20 @@
         .module('app.attendees')
         .controller('AttendeeController', AttendeeController);
 
-    AttendeeController.$inject =  ['$scope', '$state', '$stateParams', 'Podio', '$ionicLoading','attendee','$ionicPopup','$ionicHistory'];
+    AttendeeController.$inject =  ['$scope', '$state', '$stateParams', '$ionicLoading','attendee','$ionicPopup','$ionicHistory'];
 
-    function AttendeeController($scope, $state, $stateParams, Podio, $ionicLoading,attendee, $ionicPopup,$ionicHistory) {
+    function AttendeeController($scope, $state, $stateParams, $ionicLoading,attendee, $ionicPopup,$ionicHistory) {
 
 
             var eventId = $stateParams.eventId,
                 attendeeId = $stateParams.attendeeId;
             $scope.attending = true;
             $scope.addToEvent = addToEvent;
+            $scope.attendee = attendee;
 
             if($stateParams.attending == false) {
                 $scope.attending = false;
             }
-            Podio.podio.isAuthenticated()
-                .catch(function() {
-                    $ionicLoading.hide();
-                    $state.go('login');
-                })
-                .then(function() {
-                    $scope.attendee = attendee;
-                    $ionicLoading.hide();
-                });
-
-
 
             function addToEvent () {
                 $ionicLoading.show({

@@ -11,19 +11,11 @@
         .module('app.attendees')
         .controller('AttendeesController', AttendeesController);
 
-    AttendeesController.$inject = ['$scope','Podio','$ionicLoading','$state','attendees'];
+    AttendeesController.$inject = ['$scope','attendees'];
 
-    function AttendeesController ($scope,Podio,$ionicLoading,$state,attendees) {
+    function AttendeesController ($scope,attendees) {
 
-
-            Podio.podio.isAuthenticated()
-                .catch(function(error) {
-                    $state.go('login');
-                    console.log(error);
-                })
-                .then(function() {
-                    $scope.attendees = attendees;
-                });
+        $scope.attendees = attendees;
 
     }
 

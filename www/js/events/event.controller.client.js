@@ -20,17 +20,8 @@
         $scope.attendeeId = '';
         $scope.eventId = $stateParams.eventId;
         $scope.scanBarcode = scanBarcode; //bindable function
-
-        Podio.podio.isAuthenticated()
-            .catch(function() {
-                $state.go('login');
-            })
-            .then(function() {
-                return $scope.event = event;
-            })
-            .then(function() {
-                $scope.attending = true;
-            });
+        $scope.event = event;
+        $scope.attending = true;
 
 
         function scanBarcode () {

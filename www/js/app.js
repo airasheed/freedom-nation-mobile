@@ -20,7 +20,7 @@
             'app.filters',
             'app.login'])
 
-        .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,$ionicLoading) {
+        .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,$ionicLoading,Podio) {
 
             $rootScope.$on('loading:show', function () {
                 $ionicLoading.show({
@@ -36,6 +36,14 @@
 
             $rootScope.$on('$stateChangeStart', function () {
                 $rootScope.$broadcast('loading:show');
+
+                Podio.podio.isAuthenticated()
+                    .then(function () {
+                        console.log('podio is authenticated');
+                    })
+                    .catch(function(error) {
+                        console.log("this is the error" , error);
+                    });
             });
 
             $rootScope.$on('$stateChangeSuccess', function () {
@@ -47,6 +55,7 @@
             $localstorage.get('password', function (token) {
                 $http.defaults.headers.common['Authorization'] = 'OAuth2 ' + token.accessToken;
             });
+
 
 
             $rootScope.$state = $state;

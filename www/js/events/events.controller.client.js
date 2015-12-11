@@ -11,21 +11,11 @@
         .module('app.events')
         .controller('EventsController', EventsController);
 
-        EventsController.$inject = ['$scope','Podio', '$ionicLoading', 'events', '$state'];
+        EventsController.$inject = ['$scope','events'];
 
-        function EventsController ($scope, Podio, $ionicLoading,events,$state) {
+        function EventsController ($scope,events) {
 
-            $scope.events = [];
-
-            Podio.podio.isAuthenticated()
-                .then(function() {
-                    $scope.events = events;
-                })
-                .catch(function(error) {
-                    console.log(error);
-                    $state.go('login');
-                })
-
+            $scope.events = events;
 
         }
 

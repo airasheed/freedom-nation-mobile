@@ -19,13 +19,6 @@
         $scope.signIn = signIn;
         $scope.showAlert = showAlert;
 
-        Podio.podio.isAuthenticated()
-        .then(function () {
-                console.log('im here');
-            $state.go('tab.events');
-        });
-
-
 
         /*
          * Sign-in Behavior
@@ -33,16 +26,13 @@
          */
         function signIn(form) {
             if(form.$valid) {
-                Podio.podio.authenticateWithCredentials(form.email.$modelValue, form.password.$modelValue, function (error) {
-                    console.log(error);
-                    if (error) {
-                        console.log(error);
-                        $scope.showAlert()
-                    } else {
-                        console.log('no error')
-                        $state.go('tab.events');
-                    }
-                });
+
+                Podio.podio.authenticateWithCredentials(
+                    form.email.$modelValue,
+                    form.password.$modelValue,
+                    authenticationHandler
+                );
+
             }else{
                 console.log('Form Invalid');
             }
@@ -61,5 +51,22 @@
                 okType: 'button-dark'
             });
         }
-    }
+
+        /*
+        * SignIn Call Back
+        * */
+
+        function authenticationHandler(error) {
+            console.log('im here');
+                console.log(error);
+                if (error) {
+                    console.log(error);
+                    $scope.showAlert()
+                } else {
+                    console.log('no error')
+                    $state.go('tab.events');
+                }
+            }
+        }
+
 })();
