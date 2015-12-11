@@ -17,26 +17,18 @@
     function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,Podio, $ionicLoading,event,attendee) {
 
 
-        $ionicLoading.show({
-            content: 'Loading',
-            animation:'fade-in',
-            showBackdrop: true
-        });
-
         $scope.attendeeId = '';
         $scope.eventId = $stateParams.eventId;
         $scope.scanBarcode = scanBarcode; //bindable function
 
         Podio.podio.isAuthenticated()
             .catch(function() {
-                $ionicLoading.hide();
                 $state.go('login');
             })
             .then(function() {
                 return $scope.event = event;
             })
             .then(function() {
-                $ionicLoading.hide();
                 $scope.attending = true;
             });
 

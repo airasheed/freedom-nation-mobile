@@ -20,7 +20,27 @@
             'app.filters',
             'app.login'])
 
-        .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage) {
+        .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,$ionicLoading) {
+
+            $rootScope.$on('loading:show', function () {
+                $ionicLoading.show({
+                    content: 'Loading',
+                    animation: 'fade-in',
+                    showBackdrop: true
+                });
+            });
+
+            $rootScope.$on('loading:hide', function () {
+                $ionicLoading.hide();
+            });
+
+            $rootScope.$on('$stateChangeStart', function () {
+                $rootScope.$broadcast('loading:show');
+            });
+
+            $rootScope.$on('$stateChangeSuccess', function () {
+                $rootScope.$broadcast('loading:hide');
+            });
 
             /*
              * Local Storage Object Used*/

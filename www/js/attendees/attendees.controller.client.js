@@ -15,21 +15,14 @@
 
     function AttendeesController ($scope,Podio,$ionicLoading,$state,attendees) {
 
-            $ionicLoading.show({
-                content: 'Loading',
-                animation:'fade-in',
-                showBackdrop: true
-            });
 
             Podio.podio.isAuthenticated()
                 .catch(function(error) {
                     $state.go('login');
-                    $ionicLoading.hide();
                     console.log(error);
                 })
                 .then(function() {
                     $scope.attendees = attendees;
-                    $ionicLoading.hide();
                 });
 
     }

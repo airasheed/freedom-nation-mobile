@@ -15,22 +15,14 @@
 
         function EventsController ($scope, Podio, $ionicLoading,events,$state) {
 
-            $ionicLoading.show({
-                content: 'Loading',
-                animation:'fade-in',
-                showBackdrop: true
-            });
-
             $scope.events = [];
 
             Podio.podio.isAuthenticated()
                 .then(function() {
                     $scope.events = events;
-                    $ionicLoading.hide();
                 })
                 .catch(function(error) {
                     console.log(error);
-                    $ionicLoading.hide();
                     $state.go('login');
                 })
 

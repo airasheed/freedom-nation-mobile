@@ -17,12 +17,6 @@
 
     function AttendeeController($scope, $state, $stateParams, Podio, $ionicLoading,attendee, $ionicPopup,$ionicHistory) {
 
-            $ionicLoading.show({
-                content: 'Loading',
-                animation: 'fade-in',
-                showBackdrop: true
-            });
-
 
             var eventId = $stateParams.eventId,
                 attendeeId = $stateParams.attendeeId;
