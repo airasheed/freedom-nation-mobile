@@ -57,13 +57,9 @@
         * */
 
         function authenticationHandler(error) {
-            console.log('im here');
-                console.log(error);
                 if (error) {
-                    console.log(error);
                     $scope.showAlert()
                 } else {
-                    console.log('no error')
                     $state.go('tab.events');
                 }
             }

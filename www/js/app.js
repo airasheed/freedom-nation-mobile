@@ -34,16 +34,21 @@
                 $ionicLoading.hide();
             });
 
-            $rootScope.$on('$stateChangeStart', function () {
+            $rootScope.$on('$stateChangeStart', function (event,toState) {
+
                 $rootScope.$broadcast('loading:show');
 
-                Podio.podio.isAuthenticated()
-                    .then(function () {
-                        console.log('podio is authenticated');
-                    })
-                    .catch(function(error) {
-                        console.log("this is the error" , error);
-                    });
+                if(!toState.hasOwnProperty('requireAuthentication') || toState.requireAuthentication !== false){
+                    Podio.podio.isAuthenticated()
+                        .then(function () {
+                            console.log('podio is authenticated');
+                        })
+                        .catch(function(error) {
+                            event.preventDefault();
+                            $state.go('login');
+                        });
+                }
+
             });
 
             $rootScope.$on('$stateChangeSuccess', function () {
@@ -173,6 +178,7 @@
                 })
                 .state('login', {
                     url: '/login',
+                    requireAuthentication: false,
                     templateUrl: 'views/login.html',
                     controller: 'LoginController'
                 });
