@@ -17,9 +17,9 @@
         .factory('EventService',EventService);
 
 
-    EventService.$inject = ['Podio','$q', '$http', 'utilsService','fnCache'];
+    EventService.$inject = ['Podio','$q', '$http', 'utilsService','fnCache','DEFAULT_IMG'];
 
-    function EventService (Podio,$q,$http,utilsService,fnCache) {
+    function EventService (Podio,$q,$http,utilsService,fnCache,DEFAULT_IMG) {
 
             var newEvent = {},
                 newEvents = [],
@@ -107,17 +107,26 @@
                     deferred.resolve(cache);
                     return deferred.promise;
                 }else{
-                    Podio.podio.request('get', '/item/' + eventId)
+
+                    Podio.request('get', '/item/' + eventId)
                         .then(function (responseEvent) {
                             newEvent = arrangeEvent(responseEvent);
-                            return newEvent.img.file_id;
-                        })
-                        .then(function(imgId) {
-                            return $http.get('https://api.podio.com/file/' + imgId + '/raw', {responseType: 'arraybuffer'});
-                        }).then(function(response) {
-                            newEvent.img.src = utilsService.convertDataUrl(response);
-                            fnCache.put(eventId, newEvent);
-                            deferred.resolve(newEvent);
+
+                            if(newEvent.img === undefined){
+                                newEvent.img = {
+                                    src : DEFAULT_IMG.event
+                                };
+                                fnCache.put(eventId, newEvent);
+                                deferred.resolve(newEvent);
+                                return deferred.promise;
+                            }else{
+                                $http.get('https://api.podio.com/file/' + newEvent.img.file_id + '/raw', {responseType: 'arraybuffer'})
+                                    .then(function(response) {
+                                    newEvent.img.src = utilsService.convertDataUrl(response);
+                                    fnCache.put(eventId, newEvent);
+                                    deferred.resolve(newEvent);
+                                });
+                            }
                         })
                         .catch(function(error) {
                             console.log(error);
@@ -135,14 +144,13 @@
              */
             function getEvents() {
 
-
                 var deferred = $q.defer();
                 var cache = fnCache.get('allEvents');
                 if(cache){
                     deferred.resolve(cache);
                     return deferred.promise;
                 }else{
-                    Podio.podio.request('post', '/item/app/11602319/filter')
+                    Podio.request('post', '/item/app/11602319/filter')
                         .then(function (response) {
 
                             var responseEvents = response.items;

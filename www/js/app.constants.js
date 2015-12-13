@@ -4,11 +4,12 @@
 
     angular
         .module('app')
-        .constant('podio', new PodioJS({
-            authType: 'password',
-            clientId: 'fnation',
-            clientSecret: '94PMse87ShrpIw3hNv6EqkZLh4foAuIcJkrBrt5pWhsmi8SmmpE7R2djPmgwyw49'
-        }, {
-            sessionStore: $localstorage
-        }));
+        .constant('$ionicLoadingConfig',{
+            content: '<ion-spinner></ion-spinner>',
+            animation: 'fade-in',
+            showBackdrop: true
+        })
+        .constant('DEFAULT_IMG',{
+            event: '../img/freedom-nation-default-event.jpg'
+        })
 })();

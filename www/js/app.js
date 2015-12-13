@@ -23,11 +23,7 @@
         .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,$ionicLoading,Podio) {
 
             $rootScope.$on('loading:show', function () {
-                $ionicLoading.show({
-                    content: 'Loading',
-                    animation: 'fade-in',
-                    showBackdrop: true
-                });
+                $ionicLoading.show();
             });
 
             $rootScope.$on('loading:hide', function () {
@@ -39,7 +35,7 @@
                 $rootScope.$broadcast('loading:show');
 
                 if(!toState.hasOwnProperty('requireAuthentication') || toState.requireAuthentication !== false){
-                    Podio.podio.isAuthenticated()
+                    Podio.isAuthenticated()
                         .then(function () {
                             console.log('podio is authenticated');
                         })

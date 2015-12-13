@@ -12,9 +12,9 @@
         .module('app.events')
         .controller('EventController',EventController);
 
-    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state', 'Podio', '$ionicLoading','event','attendee'];
+    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee'];
 
-    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,Podio, $ionicLoading,event,attendee) {
+    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee) {
 
 
         $scope.attendeeId = '';

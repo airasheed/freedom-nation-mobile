@@ -7,10 +7,21 @@
         .controller('LoginController', LoginController);
 
 
-    LoginController.$inject = ['$scope', '$state','Podio', '$ionicPopup'];
+    LoginController.$inject = ['$scope', '$state','Podio', '$ionicPopup', '$ionicLoading'];
 
 
-    function LoginController ($scope,$state,Podio, $ionicPopup) {
+    function LoginController ($scope,$state,Podio, $ionicPopup,$ionicLoading) {
+
+        $ionicLoading.show();
+
+
+        Podio.isAuthenticated()
+            .then(function () {
+                $state.go('tab.events');
+            })
+            .catch(function(error) {
+                $ionicLoading.hide();
+         });
 
         /*
          * Initialize Login Info
@@ -27,7 +38,7 @@
         function signIn(form) {
             if(form.$valid) {
 
-                Podio.podio.authenticateWithCredentials(
+                Podio.authenticateWithCredentials(
                     form.email.$modelValue,
                     form.password.$modelValue,
                     authenticationHandler
@@ -58,7 +69,7 @@
 
         function authenticationHandler(error) {
                 if (error) {
-                    $scope.showAlert()
+                    $scope.showAlert();
                 } else {
                     $state.go('tab.events');
                 }

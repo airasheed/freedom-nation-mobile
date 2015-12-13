@@ -29,11 +29,7 @@
             }
 
             function addToEvent () {
-                $ionicLoading.show({
-                    content: 'Loading',
-                    animation: 'fade-in',
-                    showBackdrop: true
-                });
+                $ionicLoading.show();
 
                 attendee.addToEvent(eventId,attendeeId)
                     .then(function(response) {

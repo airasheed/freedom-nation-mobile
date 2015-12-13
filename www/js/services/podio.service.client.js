@@ -18,9 +18,7 @@
             sessionStore: $localstorage
         });
 
-        return {
-            podio: podio
-        };
+        return podio;
     }
 
 })();

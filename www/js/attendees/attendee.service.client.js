@@ -166,7 +166,7 @@
                     return attendees.promise;
                 }
                 //Object not cached
-                Podio.podio.request('post', '/item/app/10462146/filter', requestData)
+                Podio.request('post', '/item/app/10462146/filter', requestData)
                     .then(function (response) {
                         newAttendees = arrangeAttendees(response);
 
@@ -216,7 +216,7 @@
                     return attendee.promise;
                 }
                 //If no cached object was found make request to podio
-                Podio.podio.request('get', '/item/' + attendeeId)
+                Podio.request('get', '/item/' + attendeeId)
                     .then(function (responseEvent) {
                         newAttendee = arrangeAttendee(responseEvent);
                         return newAttendee.img.file_id;
@@ -243,7 +243,7 @@
                     }
                 };
 
-                Podio.podio.request('post', '/item/app/10462146/filter', requestData)
+                Podio.request('post', '/item/app/10462146/filter', requestData)
                     .then(function (responseEvent) {
                         newAttendee = arrangeAttendee(responseEvent.items[0]);
                         return newAttendee.img.file_id;
@@ -287,7 +287,7 @@
                     } //must parse string into integer
                 };
 
-                return Podio.podio.request('put', '/item/' + eventId, requestData)
+                return Podio.request('put', '/item/' + eventId, requestData)
                     .catch(function(error) {
                         console.log(error);
                     });
