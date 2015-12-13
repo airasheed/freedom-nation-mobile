@@ -1,5 +1,9 @@
-<ion-view>
+<ion-view view-title="">
 <ion-content>
+    <ion-refresher
+            pulling-text="Pull to refresh..."
+            on-refresh="doRefresh()">
+    </ion-refresher>
     <div id="event-img" style="background-image: url('{{event.img.src}}');"></div>
     <div class="content-body">
         <h2>{{event.name}}</h2>
