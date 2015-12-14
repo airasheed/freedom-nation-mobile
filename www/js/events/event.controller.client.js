@@ -23,6 +23,7 @@
         $scope.event = event;
         $scope.attending = true;
 
+        console.log($scope.eventId);
 
         function scanBarcode () {
 
@@ -31,6 +32,7 @@
                 .then(function (imageData) {
                     attendee.getAttendeeByBarcode(imageData.text)
                         .then(function(response) {
+                            console.log($scope.eventId);
                             $state.go('tab.attendee-detail',
                                 {
                                     eventId: $scope.eventId,

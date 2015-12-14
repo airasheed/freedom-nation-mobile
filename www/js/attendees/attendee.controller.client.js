@@ -13,9 +13,11 @@
         .module('app.attendees')
         .controller('AttendeeController', AttendeeController);
 
-    AttendeeController.$inject =  ['$scope', '$state', '$stateParams', '$ionicLoading','attendee','$ionicPopup','$ionicHistory','AttendeeService'];
+    AttendeeController.$inject =  ['$scope', '$state', '$stateParams', '$ionicLoading','attendee','$ionicPopup','$ionicHistory','AttendeeService','fnCache'];
 
-    function AttendeeController($scope, $state, $stateParams, $ionicLoading,attendee, $ionicPopup,$ionicHistory,AttendeeService) {
+    function AttendeeController($scope, $state, $stateParams, $ionicLoading,attendee, $ionicPopup,$ionicHistory,AttendeeService,fnCache) {
+
+
 
 
             var eventId = $stateParams.eventId,
@@ -28,9 +30,11 @@
                 $scope.attending = false;
             }
 
+
             function addToEvent () {
                 $ionicLoading.show();
-
+                console.log(eventId);
+                fnCache.remove('attendees:' + eventId);
                 AttendeeService.addToEvent(eventId,attendeeId)
                     .then(function(response) {
 

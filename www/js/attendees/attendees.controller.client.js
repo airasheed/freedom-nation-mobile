@@ -11,10 +11,11 @@
         .module('app.attendees')
         .controller('AttendeesController', AttendeesController);
 
-    AttendeesController.$inject = ['$scope','attendees'];
+    AttendeesController.$inject = ['$scope','attendees','$stateParams'];
 
-    function AttendeesController ($scope,attendees) {
+    function AttendeesController ($scope,attendees,$stateParams) {
 
+        $scope.eventId = $stateParams.eventId;
         $scope.attendees = attendees;
 
     }
