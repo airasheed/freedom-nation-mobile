@@ -110,7 +110,7 @@
                     Podio.request('get', '/item/' + eventId)
                         .then(function (responseEvent) {
                             newEvent = arrangeEvent(responseEvent);
-                            console.log(newEvent);
+
                             if(newEvent.img === undefined){
                                 newEvent.img = {
                                     src : DEFAULT_IMG.event
@@ -145,13 +145,11 @@
 
                 var deferred = $q.defer();
                 var cache = fnCache.get('allEvents');
-                console.log(reload);
+
                 if(cache && !reload){
-                    console.log('it was cached');
                     deferred.resolve(cache);
                     return deferred.promise;
                 }else{
-                    console.log('it was loaded');
                     Podio.request('post', '/item/app/11602319/filter')
                         .then(function (response) {
 

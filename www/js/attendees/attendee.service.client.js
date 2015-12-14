@@ -16,9 +16,9 @@
         .module('app.attendees')
         .factory('AttendeeService', AttendeeService);
 
-    AttendeeService.$inject = ['Podio', '$q', '$http', 'utilsService','fnCache'];
+    AttendeeService.$inject = ['Podio', '$q', '$http', 'utilsService','fnCache',EventService];
 
-    function AttendeeService (Podio,$q,$http,utilsService,fnCache) {
+    function AttendeeService (Podio,$q,$http,utilsService,fnCache,EventService) {
 
             var newAttendee = {},
                 newAttendees = [],
@@ -181,9 +181,7 @@
                                     })
                                     .catch(function(error) {
                                         console.log('for loop response: ', error);
-                                    }).then(function() {
-
-                                    })
+                                    });
                             })(i);
                         }
                         fnCache.put('attendees:' + eventId, newAttendees);
@@ -212,7 +210,6 @@
                  * Check for cached object
                  * */
                 if(cache && !refresh) {
-                    console.log('it was cached');
                     attendee.resolve(cache);
                     return attendee.promise;
                 }
@@ -256,7 +253,7 @@
                         attendee.resolve(newAttendee);
                     })
                     .catch(function(error) {
-                        console.log(error);
+                        attendee.resolve('not found');
                     });
                 return attendee.promise;
             }
@@ -282,16 +279,26 @@
 
             function addToEvent(eventId,attendeeId) {
 
-                var requestData = {
-                    fields: {
-                        "attendees" : parseInt(attendeeId)
-                    } //must parse string into integer
-                };
+                return EventService.getEvent(eventId, true)
+                    .then(function (response) {
+                        //retreive attendee array
+                        var attendees = JSON.parse(response.attendees);
+                        //push new attendee id
+                        attendees.push(parseInt(attendeeId));
 
-                return Podio.request('put', '/item/' + eventId, requestData)
+                        //prepare request data
+                        var requestData = {
+                            fields: {
+                                "attendees" : attendees
+                            } //must parse string into integer
+                        };
+
+                        return Podio.request('put', '/item/' + eventId, requestData)
+                    })
                     .catch(function(error) {
                         console.log(error);
                     });
+
             }
         }
 

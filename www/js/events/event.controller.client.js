@@ -39,11 +39,13 @@
                         .then(function(response) {
 
                             $scope.event = response;
-                            console.log($scope.event.attendees);
 
-                            console.log(imageData.text);
                             attendee.getAttendeeByBarcode(imageData.text)
                                 .then(function(response) {
+                                    if(response == 'not found'){
+                                        notFound();
+                                        return;
+                                    }
 
                                     //see if attendee list is empty
                                     var empty = ($scope.event.attendees == undefined) ? true : false;
@@ -53,7 +55,6 @@
                                     if(!empty) {
                                         onList = ($scope.event.attendees.indexOf(response.id) > -1) ? true : false;
                                     }
-                                    console.log(empty, onList);
 
                                     if(onList){
                                         alreadyAttendingAlert();
@@ -92,6 +93,15 @@
         function alreadyAttendingAlert() {
             navigator.notification.alert(
                 'Citizen already Attending!',  // message
+                null,         // callback
+                'Freedom Nation',            // title
+                'Ok'                  // buttonName
+            );
+        }
+
+        function notFound() {
+            navigator.notification.alert(
+                'Citizen Not Found',  // message
                 null,         // callback
                 'Freedom Nation',            // title
                 'Ok'                  // buttonName
