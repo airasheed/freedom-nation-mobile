@@ -1,5 +1,9 @@
 <ion-view view-title="Attendees">
     <ion-content>
+        <ion-refresher
+                pulling-text="Pull to refresh..."
+                on-refresh="pullRefresh()">
+        </ion-refresher>
         <ion-list>
             <ion-item class="item-remove-animate item-icon-right item-avatar" type="item-text-wrap"
                       ng-repeat="attendee in attendees"

@@ -3,6 +3,10 @@
         <img class="nav-bar-img" ng-src="img/logo.png" />
     </ion-nav-title>
     <ion-content>
+        <ion-refresher
+                pulling-text="Pull to refresh..."
+                on-refresh="pullRefresh()">
+        </ion-refresher>
         <ion-list>
             <ion-item class="item-remove-animate item-icon-right" type="item-text-wrap" ng-repeat="event in events"
                       ui-sref="tab.event-detail({eventId:event.id})">

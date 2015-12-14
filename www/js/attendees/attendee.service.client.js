@@ -150,7 +150,7 @@
              * @returns {Object} Returns a promise with event information
              */
 
-            function getAttendees(attendeeIds,eventId) {
+            function getAttendees(attendeeIds,eventId,refresh) {
 
 
                 var attendees = $q.defer();
@@ -161,7 +161,8 @@
                 };
                 var cache = fnCache.get('attendees:' + eventId);
                 //If object cached
-                if(cache) {
+                console.log
+                if(cache && !refresh) {
                     attendees.resolve(cache);
                     return attendees.promise;
                 }
@@ -202,7 +203,7 @@
              *
              * */
 
-            function getAttendee (attendeeId) {
+            function getAttendee (attendeeId,refresh) {
 
                 var attendee = $q.defer();
                 var cache = fnCache.get(attendeeId);
@@ -210,7 +211,7 @@
                 /*
                  * Check for cached object
                  * */
-                if(cache) {
+                if(cache && !refresh) {
                     console.log('it was cached');
                     attendee.resolve(cache);
                     return attendee.promise;

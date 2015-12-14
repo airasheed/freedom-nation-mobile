@@ -99,19 +99,18 @@
              * @param {String} eventId - Id of the event
              * @returns {Object} Returns a promise with event information
              */
-            function getEvent(eventId) {
+            function getEvent(eventId,reload) {
                 var deferred = $q.defer();
                 var cache = fnCache.get(eventId);
 
-                if(cache) {
+                if(cache && !reload) {
                     deferred.resolve(cache);
                     return deferred.promise;
                 }else{
-
                     Podio.request('get', '/item/' + eventId)
                         .then(function (responseEvent) {
                             newEvent = arrangeEvent(responseEvent);
-
+                            console.log(newEvent);
                             if(newEvent.img === undefined){
                                 newEvent.img = {
                                     src : DEFAULT_IMG.event
@@ -142,17 +141,21 @@
              * Get multiple events
              * @returns {Object} Returns a promise with event information
              */
-            function getEvents() {
+            function getEvents(reload) {
 
                 var deferred = $q.defer();
                 var cache = fnCache.get('allEvents');
-                if(cache){
+                console.log(reload);
+                if(cache && !reload){
+                    console.log('it was cached');
                     deferred.resolve(cache);
                     return deferred.promise;
                 }else{
+                    console.log('it was loaded');
                     Podio.request('post', '/item/app/11602319/filter')
                         .then(function (response) {
 
+                            newEvents = [];
                             var responseEvents = response.items;
 
                             for (var i = 0, n = responseEvents.length; i < n; i++) {

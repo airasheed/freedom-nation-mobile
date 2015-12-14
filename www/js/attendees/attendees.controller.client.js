@@ -11,14 +11,37 @@
         .module('app.attendees')
         .controller('AttendeesController', AttendeesController);
 
-    AttendeesController.$inject = ['$scope','attendees','$stateParams'];
+    AttendeesController.$inject = ['$scope','attendees','$stateParams','AttendeeService','EventService'];
 
-    function AttendeesController ($scope,attendees,$stateParams) {
+    function AttendeesController ($scope,attendees,$stateParams,AttendeeService,EventService) {
 
         $scope.eventId = $stateParams.eventId;
+        if($stateParams.attendeeIds){
+            $scope.attendeeIds = JSON.parse($stateParams.attendeeIds);
+        }
         $scope.attendees = attendees;
+        $scope.pullRefresh = pullRefresh;
+
+
+        //////////////////////////
+
+        function pullRefresh() {
+            EventService.getEvent($scope.eventId, true)
+                .then(function(response) {
+                    var attendeeIds = JSON.parse(response.attendees);
+                    return AttendeeService.getAttendees(attendeeIds,$scope.eventId,true);
+                })
+                .then(refreshAttendees);
+        }
+
+        function refreshAttendees(response) {
+            $scope.attendees = response;
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+
 
     }
+
 
 
 })();

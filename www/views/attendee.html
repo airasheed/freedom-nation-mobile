@@ -1,5 +1,9 @@
 <ion-view view-title="{{attendee.name}}">
     <ion-content>
+        <ion-refresher
+                pulling-text="Pull to refresh..."
+                on-refresh="pullRefresh()">
+        </ion-refresher>
         <div class="attendee-img-div row circleBase" style="background-image:url('{{attendee.img.src}}');">
         </div>
         <div class="attendee-info">
@@ -8,19 +12,20 @@
 
         <div class="status-div row">
             <div class="col status">Status: </div>
-            <!--<div class="col" ng-class="attendee.status == 'inactive' ? 'inactive' : 'active '">-->
-                <!--<i class="icon-member-status" ng-class="attendee.status == 'inactive' ? 'ion-alert-circled' : 'ion-checkmark-circled' "></i>-->
-                <!--<span class="text-member-status">{{attendee.status}}</span></div>-->
-            <div class="col" ng-class="attendee.status == 'inactive' ? 'inactive ion-alert-circled' : 'active ion-checkmark-circled'">
+            <div class="col" ng-class="attendee.status == 'Inactive' ? 'inactive ion-alert-circled' : 'active ion-checkmark-circled'">
                 {{attendee.status}}
             </div>
+        </div>
+        <div class="row">
+            <div ng-if="attendee.status == 'Inactive'" class="reactive-msg col">Please Reactivate Account</div>
         </div>
 
     </ion-content>
     <ion-footer-bar class="custom-footer-bar">
-            <button class="button col" ng-if="attendee.status == 'inactive' && !attending">Member Inactive</button>
             <button class="button col button-dark" ng-click="addToEvent()"
-                    ng-if="!attending && attendee.status != 'inactive'">Add to Event</button>
+                    ng-if="!attending && attendee.status != 'Inactive'">Add to Event</button>
             <button class="button col disabled" ng-if="attending">Attending Event</button>
+        <button class="button col button-dark" ng-click="goBack()"
+                ng-if="!attending && attendee.status == 'Inactive'">Return to Event</button>
     </ion-footer-bar>
 </ion-view>

@@ -18,35 +18,23 @@
     function AttendeeController($scope, $state, $stateParams, $ionicLoading,attendee, $ionicPopup,$ionicHistory,AttendeeService,fnCache) {
 
 
-
-
             var eventId = $stateParams.eventId,
                 attendeeId = $stateParams.attendeeId;
-            $scope.attending = true;
-            $scope.addToEvent = addToEvent;
+            $scope.attending = ($stateParams.attending) ? true : false;
             $scope.attendee = attendee;
-
-            if($stateParams.attending == false) {
-                $scope.attending = false;
-            }
+            $scope.addToEvent = addToEvent;
+            $scope.pullRefresh = pullRefresh;
+            $scope.goBack = goBack;
 
 
             function addToEvent () {
                 $ionicLoading.show();
-                console.log(eventId);
-                fnCache.remove('attendees:' + eventId);
+
                 AttendeeService.addToEvent(eventId,attendeeId)
                     .then(function(response) {
-
                         if(response !== null) {
                             $ionicLoading.hide();
-                            $ionicPopup.alert({
-                                title: 'Confirmation',
-                                template: 'Member Added'
-                            })
-                                .then(function(res) {
-                                    $ionicHistory.goBack();
-                                });
+                            attendedAddedDialog();
                         }
                     })
                     .catch(function(error) {
@@ -54,6 +42,29 @@
                     })
             }
 
+        function pullRefresh() {
+            AttendeeService.getAttendee(attendeeId,true)
+                .then(refreshEvent);
+        }
+
+        function refreshEvent(response) {
+            $scope.attendee = response;
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+
+
+        function attendedAddedDialog() {
+            navigator.notification.alert(
+                'Member Added!',  // message
+                goBack,         // callback
+                'Freedom Nation',            // title
+                'Ok'                  // buttonName
+            );
+        }
+
+        function goBack() {
+            $ionicHistory.goBack();
+        }
         }
 
 })();

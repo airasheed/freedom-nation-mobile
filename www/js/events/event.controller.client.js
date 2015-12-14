@@ -12,36 +12,65 @@
         .module('app.events')
         .controller('EventController',EventController);
 
-    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee'];
+    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee','EventService'];
 
-    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee) {
+    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee,EventService) {
 
 
+        //Public Variables
         $scope.attendeeId = '';
         $scope.eventId = $stateParams.eventId;
-        $scope.scanBarcode = scanBarcode; //bindable function
         $scope.event = event;
         $scope.attending = true;
 
-        console.log($scope.eventId);
+        //Public Methods
+        $scope.scanBarcode = scanBarcode; //bindable function
+        $scope.pullRefresh = pullRefresh;
+
+        /////////////////////////////
+
 
         function scanBarcode () {
 
             //Scanbarcode
             $cordovaBarcodeScanner.scan()
                 .then(function (imageData) {
-                    attendee.getAttendeeByBarcode(imageData.text)
+                    EventService.getEvent($scope.eventId,true)
                         .then(function(response) {
-                            console.log($scope.eventId);
-                            $state.go('tab.attendee-detail',
-                                {
-                                    eventId: $scope.eventId,
-                                    attendeeId: response.id,
-                                    attending: false
+
+                            $scope.event = response;
+                            console.log($scope.event.attendees);
+
+                            console.log(imageData.text);
+                            attendee.getAttendeeByBarcode(imageData.text)
+                                .then(function(response) {
+
+                                    //see if attendee list is empty
+                                    var empty = ($scope.event.attendees == undefined) ? true : false;
+                                    var onList;
+
+                                    //see if attendee is on list
+                                    if(!empty) {
+                                        onList = ($scope.event.attendees.indexOf(response.id) > -1) ? true : false;
+                                    }
+                                    console.log(empty, onList);
+
+                                    if(onList){
+                                        alreadyAttendingAlert();
+                                    }else{
+                                        $state.go('tab.attendee-detail',
+                                            {
+                                                eventId: $scope.eventId,
+                                                attendeeId: response.id,
+                                                attending: false,
+                                                refresh: true
+                                            });
+                                    }
+
+                                })
+                                .catch(function(error) {
+                                    alert(error);
                                 });
-                        })
-                        .catch(function(error) {
-                            alert(error);
                         });
                 })
                 .catch(function (error) {
@@ -50,6 +79,24 @@
 
         }
 
+        function pullRefresh() {
+            EventService.getEvent($scope.eventId,true)
+                .then(refreshEvent);
+        }
+
+        function refreshEvent(response) {
+            $scope.event = response;
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+
+        function alreadyAttendingAlert() {
+            navigator.notification.alert(
+                'Citizen already Attending!',  // message
+                null,         // callback
+                'Freedom Nation',            // title
+                'Ok'                  // buttonName
+            );
+        }
     }
 
 

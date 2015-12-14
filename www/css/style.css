@@ -33,6 +33,11 @@
 .attendee-info {
     text-align: center;
 }
+.reactive-msg {
+    display: block;
+    text-align: center;
+    font-size: 18px;
+}
 
 .status {
     text-align: right;
@@ -173,4 +178,7 @@
     height: auto;
     margin: 5px auto 5px auto;
     width: 70%;
+}
+.inactive.ion-alert-circled:before,.active.ion-alert-circled:before{
+    vertical-align: middle;
 }

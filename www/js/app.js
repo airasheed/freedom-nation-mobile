@@ -103,12 +103,13 @@
                             templateUrl: 'views/events.html',
                             controller: 'EventsController',
                             resolve: {
-                                events: function (EventService) {
-                                    return EventService.getEvents();
+                                events: function (EventService,$stateParams) {
+                                    return EventService.getEvents($stateParams.refresh);
                                 }
                             }
                         }
-                    }
+                    },
+                    params: {refresh:false}
                 })
                 .state('tab.event-detail',{
                     url:'/event/:eventId',
@@ -118,7 +119,9 @@
                             controller: 'EventController',
                             resolve: {
                                 event : function(EventService,$stateParams) {
-                                    return EventService.getEvent($stateParams.eventId);
+                                    var eventId = $stateParams.eventId,
+                                        refresh = $stateParams.refresh;
+                                    return EventService.getEvent(eventId,refresh);
                                 },
                                 attendee : function(AttendeeService) {
                                     return AttendeeService;
@@ -126,7 +129,7 @@
                             }
                         }
                     },
-                    params: {eventId: null}
+                    params: {eventId: null,refresh: false} //must declare params here,
                 })
                 .state('tab.attendees',{
                     url: '/attendees/:attendeeIds',
@@ -139,8 +142,10 @@
                                     var attendeeIds = $stateParams.attendeeIds;
                                     if(attendeeIds) {
                                         attendeeIds = JSON.parse(attendeeIds);
-                                        var eventId = $stateParams.eventId;
-                                        return AttendeeService.getAttendees(attendeeIds, eventId);
+                                        var eventId = $stateParams.eventId,
+                                            refresh = $stateParams.refresh;
+
+                                        return AttendeeService.getAttendees(attendeeIds, eventId,refresh);
                                     }else {
                                         return undefined;
                                     }
@@ -150,7 +155,8 @@
                     },
                     params: {
                         eventId: null,
-                        attendeeIds: {array:true}
+                        attendeeIds: {array:true},
+                        refresh: false
                     }
                 })
                 .state('tab.attendee-detail',{
@@ -161,7 +167,9 @@
                             controller: 'AttendeeController',
                             resolve: {
                                 attendee : function(AttendeeService,$stateParams) {
-                                    return AttendeeService.getAttendee($stateParams.attendeeId);
+                                    var attendeeId = $stateParams.attendeeId,
+                                        refresh = $stateParams.refresh;
+                                    return AttendeeService.getAttendee(attendeeId,refresh);
                                 }
                             }
                         }
@@ -169,7 +177,8 @@
                     params:{
                         eventId: null,
                         attendeeId: null,
-                        attending: true
+                        attending: true,
+                        refresh:false
                     }
                 })
                 .state('login', {
