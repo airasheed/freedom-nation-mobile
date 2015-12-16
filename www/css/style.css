@@ -27,7 +27,7 @@ body {
 .attendee-img-div {
     width: 300px;
     height: 300px;
-    background-size: 130%;
+    background-size: 100%;
     margin: 15px auto;
     background-repeat: no-repeat;
     background-position: center;
@@ -41,15 +41,12 @@ body {
     text-align: center;
     font-size: 18px;
 }
-
-.status {
-    text-align: right;
-}
 .active, .inactive {
     font-size: 24px;
     text-transform: Capitalize;
     vertical-align: top;
     line-height: 40px;
+    text-align: right;
 }
 .ion-alert-circled:before{
     color: #e74c3c;
@@ -65,7 +62,7 @@ body {
     font-size: 40px;
 }
 .status {
-    text-align: right;
+    text-align: left;
     border-right: 1px solid #f8f8f8;
     margin-bottom: 20px;
     font-size: 18px;
@@ -79,7 +76,7 @@ body {
     height: 370px;
     background-position: center 30px;
     background-repeat: no-repeat;
-    background-size: 228px auto;
+    background-size: 70%;
 }
 /*
  * Event CSS

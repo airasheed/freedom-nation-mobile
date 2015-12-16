@@ -16,9 +16,9 @@
         .module('app.attendees')
         .factory('AttendeeService', AttendeeService);
 
-    AttendeeService.$inject = ['Podio', '$q', '$http', 'utilsService','fnCache',EventService];
+    AttendeeService.$inject = ['Podio', '$q', '$http', 'utilsService','fnCache','EventService','DEFAULT_IMG'];
 
-    function AttendeeService (Podio,$q,$http,utilsService,fnCache,EventService) {
+    function AttendeeService (Podio,$q,$http,utilsService,fnCache,EventService,DEFAULT_IMG) {
 
             var newAttendee = {},
                 newAttendees = [],
@@ -161,7 +161,7 @@
                 };
                 var cache = fnCache.get('attendees:' + eventId);
                 //If object cached
-                console.log
+
                 if(cache && !refresh) {
                     attendees.resolve(cache);
                     return attendees.promise;
@@ -174,14 +174,19 @@
                         for(var i = 0; i < newAttendees.length; i++) {
                             //capture value of i with IIFE
                             (function (j) {
-                                $http.get(fileAPIUrl + newAttendees[j].img.file_id
-                                    + '/raw',{responseType:'arraybuffer'})
-                                    .then(function(response) {
-                                        newAttendees[j].img.src = utilsService.convertDataUrl(response);
-                                    })
-                                    .catch(function(error) {
-                                        console.log('for loop response: ', error);
-                                    });
+                                if(newAttendees[j].img !== undefined){
+                                    $http.get(fileAPIUrl + newAttendees[j].img.file_id
+                                        + '/raw',{responseType:'arraybuffer'})
+                                        .then(function(response) {
+                                            newAttendees[j].img.src = utilsService.convertDataUrl(response);
+                                        })
+                                        .catch(function(error) {
+                                            console.log('for loop response: ', error);
+                                        });
+                                }else{
+                                    newAttendees[j].img = {src : DEFAULT_IMG.attendee};
+                                }
+
                             })(i);
                         }
                         fnCache.put('attendees:' + eventId, newAttendees);
@@ -213,16 +218,24 @@
                     attendee.resolve(cache);
                     return attendee.promise;
                 }
+
+
                 //If no cached object was found make request to podio
                 Podio.request('get', '/item/' + attendeeId)
                     .then(function (responseEvent) {
                         newAttendee = arrangeAttendee(responseEvent);
-                        return newAttendee.img.file_id;
-                    })
-                    .then(function(imgId) {
-                        return $http.get(fileAPIUrl + imgId + '/raw', {responseType: 'arraybuffer'});
-                    }).then(function(response) {
-                        newAttendee.img.src = utilsService.convertDataUrl(response);
+
+                        if(newAttendee.img !== undefined) {
+                            return $http.get(fileAPIUrl + newAttendee.img.file_id + '/raw', {responseType: 'arraybuffer'})
+                                .then(function(response) {
+                                newAttendee.img.src = utilsService.convertDataUrl(response);
+                                fnCache.put(attendeeId, newAttendee);
+                                attendee.resolve(newAttendee);
+                            });
+                        }
+
+                        newAttendee.img = {src : DEFAULT_IMG.attendee};
+
                         fnCache.put(attendeeId, newAttendee);
                         attendee.resolve(newAttendee);
                     })
@@ -244,12 +257,18 @@
                 Podio.request('post', '/item/app/10462146/filter', requestData)
                     .then(function (responseEvent) {
                         newAttendee = arrangeAttendee(responseEvent.items[0]);
-                        return newAttendee.img.file_id;
-                    })
-                    .then(function(imgId) {
-                        return $http.get(fileAPIUrl+ imgId + '/raw', {responseType: 'arraybuffer'});
-                    }).then(function(response) {
-                        newAttendee.img.src = utilsService.convertDataUrl(response);
+
+                        if(newAttendee.img !== undefined){
+                            return $http.get(fileAPIUrl+ imgId + '/raw', {responseType: 'arraybuffer'})
+                                .then(function(response) {
+                                    newAttendee.img.src = utilsService.convertDataUrl(response);
+                                    attendee.resolve(newAttendee);
+                                });
+                        }
+
+                        newAttendee.img = {
+                            src : DEFAULT_IMG.attendee
+                        }
                         attendee.resolve(newAttendee);
                     })
                     .catch(function(error) {

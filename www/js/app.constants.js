@@ -10,6 +10,7 @@
             showBackdrop: true
         })
         .constant('DEFAULT_IMG',{
-            event: 'img/freedom-nation-default-event.jpg'
+            event: 'img/freedom-nation-default-event.jpg',
+            attendee: 'img/citizen-default.jpg'
         })
 })();

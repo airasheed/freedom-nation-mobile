@@ -11,7 +11,7 @@
         .module('app.events')
         .controller('EventsController', EventsController);
 
-        EventsController.$inject = ['$scope','events',EventService];
+        EventsController.$inject = ['$scope','events','EventService'];
 
         function EventsController ($scope,events,EventService) {
 

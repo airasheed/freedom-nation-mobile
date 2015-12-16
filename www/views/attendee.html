@@ -11,8 +11,8 @@
         </div>
 
         <div class="status-div row">
-            <div class="col status">Status: </div>
-            <div class="col" ng-class="attendee.status == 'Inactive' ? 'inactive ion-alert-circled' : 'active ion-checkmark-circled'">
+            <div ng-class="attendee.status == 'Inactive' ? 'inactive ion-alert-circled' : 'active ion-checkmark-circled'" class="col"></div>
+            <div class="col status">
                 {{attendee.status}}
             </div>
         </div>

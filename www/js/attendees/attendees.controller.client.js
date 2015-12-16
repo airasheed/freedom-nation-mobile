@@ -29,14 +29,18 @@
         function pullRefresh() {
             EventService.getEvent($scope.eventId, true)
                 .then(function(response) {
-                    var attendeeIds = JSON.parse(response.attendees);
-                    return AttendeeService.getAttendees(attendeeIds,$scope.eventId,true);
+                    if(response.attendees) {
+                        var attendeeIds = JSON.parse(response.attendees);
+                        return AttendeeService.getAttendees(attendeeIds,$scope.eventId,true);
+                    }
                 })
                 .then(refreshAttendees);
         }
 
         function refreshAttendees(response) {
-            $scope.attendees = response;
+            if(response) {
+                $scope.attendees = response;
+            }
             $scope.$broadcast('scroll.refreshComplete');
         }
 
