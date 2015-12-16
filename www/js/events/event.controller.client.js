@@ -12,9 +12,9 @@
         .module('app.events')
         .controller('EventController',EventController);
 
-    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee','EventService'];
+    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee','EventService','exception'];
 
-    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee,EventService) {
+    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee,EventService,exception) {
 
 
         //Public Variables
@@ -40,7 +40,7 @@
 
                             $scope.event = response;
 
-                            attendee.getAttendeeByBarcode(imageData.text)
+                            return attendee.getAttendeeByBarcode(imageData.text)
                                 .then(function(response) {
                                     if(response == 'not found'){
                                         notFound();
@@ -68,21 +68,15 @@
                                             });
                                     }
 
-                                })
-                                .catch(function(error) {
-                                    alert(error);
                                 });
                         });
-                })
-                .catch(function (error) {
-                    alert('An error occurred -> ' + error);
                 });
-
         }
 
         function pullRefresh() {
             EventService.getEvent($scope.eventId,true)
-                .then(refreshEvent);
+                .then(refreshEvent)
+                .catch(exception.catcher('Refresh Error'))
         }
 
         function refreshEvent(response) {

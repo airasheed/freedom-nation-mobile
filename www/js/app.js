@@ -18,7 +18,9 @@
             'app.events',
             'app.attendees',
             'app.filters',
-            'app.login'])
+            'app.login',
+        'blocks.exception',
+        'blocks.logger'])
 
         .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,$ionicLoading,Podio) {
 

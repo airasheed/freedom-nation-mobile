@@ -7,10 +7,12 @@
         .controller('LoginController', LoginController);
 
 
-    LoginController.$inject = ['$scope', '$state','Podio', '$ionicPopup', '$ionicLoading'];
+    LoginController.$inject = ['$scope', '$state','Podio','$ionicLoading','exception'];
 
 
-    function LoginController ($scope,$state,Podio, $ionicPopup,$ionicLoading) {
+    function LoginController ($scope,$state,Podio,$ionicLoading,exception) {
+
+        //exception.catcher('hi')('this is a test');
 
         $ionicLoading.show();
 
@@ -66,8 +68,10 @@
 
         function authenticationHandler(error) {
                 if (error) {
+                    exception.catcher('Please Try Again')(error);
                     $ionicLoading.hide();
                     $scope.loginUnsuccesful();
+
                 } else {
                     $state.go('tab.events');
                 }

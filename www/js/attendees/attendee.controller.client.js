@@ -13,9 +13,9 @@
         .module('app.attendees')
         .controller('AttendeeController', AttendeeController);
 
-    AttendeeController.$inject =  ['$scope', '$state', '$stateParams', '$ionicLoading','attendee','$ionicPopup','$ionicHistory','AttendeeService','fnCache'];
+    AttendeeController.$inject =  ['$scope', '$stateParams', '$ionicLoading','attendee','$ionicHistory','AttendeeService','exception'];
 
-    function AttendeeController($scope, $state, $stateParams, $ionicLoading,attendee, $ionicPopup,$ionicHistory,AttendeeService,fnCache) {
+    function AttendeeController($scope, $stateParams, $ionicLoading,attendee,$ionicHistory,AttendeeService,exception) {
 
 
             var eventId = $stateParams.eventId,
@@ -37,14 +37,13 @@
                             attendedAddedDialog();
                         }
                     })
-                    .catch(function(error) {
-                        console.log(error);
-                    })
+                    .catch(exception.catcher('User not added to event'))
             }
 
         function pullRefresh() {
             AttendeeService.getAttendee(attendeeId,true)
-                .then(refreshEvent);
+                .then(refreshEvent)
+                .catch(exception.catcher('Refresh Error'));
         }
 
         function refreshEvent(response) {

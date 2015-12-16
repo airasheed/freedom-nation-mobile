@@ -16,9 +16,9 @@
         .module('app.attendees')
         .factory('AttendeeService', AttendeeService);
 
-    AttendeeService.$inject = ['Podio', '$q', '$http', 'utilsService','fnCache','EventService','DEFAULT_IMG'];
+    AttendeeService.$inject = ['Podio', '$q', '$http', 'utilsService','fnCache','EventService','DEFAULT_IMG','exception'];
 
-    function AttendeeService (Podio,$q,$http,utilsService,fnCache,EventService,DEFAULT_IMG) {
+    function AttendeeService (Podio,$q,$http,utilsService,fnCache,EventService,DEFAULT_IMG,exception) {
 
             var newAttendee = {},
                 newAttendees = [],
@@ -180,9 +180,7 @@
                                         .then(function(response) {
                                             newAttendees[j].img.src = utilsService.convertDataUrl(response);
                                         })
-                                        .catch(function(error) {
-                                            console.log('for loop response: ', error);
-                                        });
+                                        .catch(exception.catcher('Fetching Image Error'));
                                 }else{
                                     newAttendees[j].img = {src : DEFAULT_IMG.attendee};
                                 }
@@ -192,9 +190,7 @@
                         fnCache.put('attendees:' + eventId, newAttendees);
                         attendees.resolve(newAttendees);
                     })
-                    .catch(function(error) {
-                        console.log(error)
-                    });
+                    .catch(exception.catcher('Fetching Attendees Error'));
 
                 return attendees.promise;
 
@@ -239,9 +235,7 @@
                         fnCache.put(attendeeId, newAttendee);
                         attendee.resolve(newAttendee);
                     })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
+                    .catch(exception.catcher('Fetching Attendee Error'));
                 return attendee.promise;
             }
 
@@ -284,9 +278,7 @@
                     .then(function (response) {
                         var dataUrl = utilsService.convertDataUrl(response);
                         qImgUrl.resolve(dataURL);
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
+                    }).catch(exception.catcher('Get Image Error'));
 
                 return qImgUrl.promise;
             }
@@ -301,7 +293,11 @@
                 return EventService.getEvent(eventId, true)
                     .then(function (response) {
                         //retreive attendee array
-                        var attendees = JSON.parse(response.attendees);
+                        console.log(response);
+                        var attendees = [];
+                        if(response.attendees !== undefined) {
+                            attendees = JSON.parse(response.attendees);
+                        }
                         //push new attendee id
                         attendees.push(parseInt(attendeeId));
 
@@ -314,9 +310,7 @@
 
                         return Podio.request('put', '/item/' + eventId, requestData)
                     })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
+                    .catch(exception.catcher('Add to Event Error'));
 
             }
         }

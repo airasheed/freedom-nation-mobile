@@ -17,9 +17,10 @@
         .factory('EventService',EventService);
 
 
-    EventService.$inject = ['Podio','$q', '$http', 'utilsService','fnCache','DEFAULT_IMG'];
+    EventService.$inject = ['Podio','$q', '$http', 'utilsService','fnCache','DEFAULT_IMG','exception'];
 
-    function EventService (Podio,$q,$http,utilsService,fnCache,DEFAULT_IMG) {
+    function EventService (Podio,$q,$http,utilsService,fnCache,DEFAULT_IMG,exception) {
+
 
             var newEvent = {},
                 newEvents = [],
@@ -127,9 +128,7 @@
                                 });
                             }
                         })
-                        .catch(function(error) {
-                            console.log(error);
-                        });
+                        .catch(exception.catcher('Error Fetching Event'));
                     return deferred.promise;
                 }
 
@@ -162,9 +161,7 @@
                             fnCache.put('allEvents', newEvents);
                             deferred.resolve(newEvents);
                         })
-                        .catch(function(error) {
-                            console.log(error);
-                        });
+                        .catch(exception.catcher('Error Fetching Event'));
 
                     return deferred.promise;
                 };

@@ -11,9 +11,9 @@
         .module('app.attendees')
         .controller('AttendeesController', AttendeesController);
 
-    AttendeesController.$inject = ['$scope','attendees','$stateParams','AttendeeService','EventService'];
+    AttendeesController.$inject = ['$scope','attendees','$stateParams','AttendeeService','EventService','exception'];
 
-    function AttendeesController ($scope,attendees,$stateParams,AttendeeService,EventService) {
+    function AttendeesController ($scope,attendees,$stateParams,AttendeeService,EventService,exception) {
 
         $scope.eventId = $stateParams.eventId;
         if($stateParams.attendeeIds){
@@ -34,12 +34,14 @@
                         return AttendeeService.getAttendees(attendeeIds,$scope.eventId,true);
                     }
                 })
-                .then(refreshAttendees);
+                .then(refreshAttendees)
+                .catch(exception.catcher('Refresh Error'));
         }
 
         function refreshAttendees(response) {
             if(response) {
                 $scope.attendees = response;
+                $scope.empty = false;
             }
             $scope.$broadcast('scroll.refreshComplete');
         }
