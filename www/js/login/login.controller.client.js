@@ -28,7 +28,7 @@
          * */
         $scope.auth = { email: '', password: ''};
         $scope.signIn = signIn;
-        $scope.showAlert = showAlert;
+        $scope.loginUnsuccesful = loginUnsuccesful;
 
 
         /*
@@ -37,7 +37,7 @@
          */
         function signIn(form) {
             if(form.$valid) {
-
+                $ionicLoading.show();
                 Podio.authenticateWithCredentials(
                     form.email.$modelValue,
                     form.password.$modelValue,
@@ -51,16 +51,13 @@
         }
 
 
-        /*
-         * Login Error Alert Function
-         */
-        function showAlert () {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Login Unsuccesful!',
-                cssClass: 'login-alert',
-                template: 'Please Try Again!',
-                okType: 'button-dark'
-            });
+        function loginUnsuccesful() {
+            navigator.notification.alert(
+                'Username or Password incorrect. Please try again.',  // message
+                null,         // callback
+                'Freedom Nation',            // title
+                'Ok'                  // buttonName
+            );
         }
 
         /*
@@ -69,7 +66,8 @@
 
         function authenticationHandler(error) {
                 if (error) {
-                    $scope.showAlert();
+                    $ionicLoading.hide();
+                    $scope.loginUnsuccesful();
                 } else {
                     $state.go('tab.events');
                 }

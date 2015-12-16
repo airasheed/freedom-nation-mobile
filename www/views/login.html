@@ -1,36 +1,34 @@
-<ion-view view-title="Login" hide-back-button="true">
-    <ion-nav-title>
-        <img class="nav-bar-img" ng-src="img/logo.png"/>
-    </ion-nav-title>
+<ion-view hide-back-button="true" hide-nav-bar="true">
     <ion-content>
-        <div class="card">
+        <div id="login-header">
+            <img class="nav-bar-img" ng-src="img/logo.png"/>
+        </div>
+
+        <div>
+            <img id="podio-img" ng-src="img/podio-logo.png"/>
+        </div>
             <form name="authForm" novalidate ng-submit="signIn(authForm)">
-            <div class="item item-divider ">
-                Login
-            </div>
-            <div class="item item-text-wrap">
+            <div class="item item-text-wrap" style="padding: 20px 40px 10px;">
                     <label class="item item-input" ng-class="{'has-errors' : authForm.email.$invalid && authForm.$dirty, 'no-errors' :
                 authForm.email.$valid && authForm.$dirty}">
-                        <span class="input-label">Email</span>
-                        <input type="email" name="email" ng-model="auth.email" required/>
+                        <span class="input-label"><i class="icon ion-email"></i></span>
+                        <input type="email" name="email" ng-model="auth.email" placeholder="Email" required/>
                     </label>
-                    <div class="error-container" ng-show="authForm.email.$error && authForm.$dirty" ng-messages="authForm.email.$error">
+                    <!--<div class="error-container" ng-show="authForm.email.$error && authForm.$dirty" ng-messages="authForm.email.$error">
                         <div ng-messages-include="error-list.html"></div>
-                    </div>
+                    </div>-->
                     <label class="item item-input" ng-class="{'has-errors': authForm.password.$invalid && authForm.$submitted, 'no-errors': authForm.password.$valid && authForm.$submitted}">
-                        <span class="input-label">Password</span>
-                        <input type="password" name="password" ng-model="auth.password" required>
+                        <span class="input-label"><i class="icon ion-locked"></i></span>
+                        <input type="password" name="password" ng-model="auth.password" placeholder="Password" required>
                     </label>
-                    <div class="error-container last-error-container"
+                    <!--<div class="error-container last-error-container"
                          ng-show="authForm.password.$error && authForm.$submitted" ng-messages="authForm.password.$error">
                         <div ng-messages-include="error-list.html"></div>
-                    </div>
-            </div>
-            <div class="item item-divider">
-                    <input type="submit" value="Submit" class="button button-block"/>
+                    </div>-->
+                <input type="submit" value="Login" class="button button-block login-button"/>
             </div>
             </form>
-        </div>
+
 
         <script id="error-list.html" type="text/ng-template">
             <div class="error" ng-message="required">

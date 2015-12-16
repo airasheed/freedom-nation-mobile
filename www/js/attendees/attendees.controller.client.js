@@ -20,6 +20,7 @@
             $scope.attendeeIds = JSON.parse($stateParams.attendeeIds);
         }
         $scope.attendees = attendees;
+        $scope.empty = (!attendees) ? true : false;
         $scope.pullRefresh = pullRefresh;
 
 
