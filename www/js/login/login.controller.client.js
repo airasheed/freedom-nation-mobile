@@ -7,10 +7,10 @@
         .controller('LoginController', LoginController);
 
 
-    LoginController.$inject = ['$scope', '$state','Podio','$ionicLoading','exception'];
+    LoginController.$inject = ['$scope', '$state','Podio','$ionicLoading','logger'];
 
 
-    function LoginController ($scope,$state,Podio,$ionicLoading,exception) {
+    function LoginController ($scope,$state,Podio,$ionicLoading,logger) {
 
         //exception.catcher('hi')('this is a test');
 
@@ -68,9 +68,8 @@
 
         function authenticationHandler(error) {
                 if (error) {
-                    exception.catcher('Please Try Again')(error);
                     $ionicLoading.hide();
-                    $scope.loginUnsuccesful();
+                    logger.error("Please Try Again", 'Username or Password Error');
 
                 } else {
                     $state.go('tab.events');

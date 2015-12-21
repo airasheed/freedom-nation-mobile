@@ -20,7 +20,7 @@
             'app.filters',
             'app.login',
         'blocks.exception',
-        'blocks.logger'])
+        ])
 
         .run(function($ionicPlatform,$rootScope,$state,$stateParams, $http,$localstorage,$ionicLoading,Podio) {
 
@@ -39,7 +39,7 @@
                 if(!toState.hasOwnProperty('requireAuthentication') || toState.requireAuthentication !== false){
                     Podio.isAuthenticated()
                         .then(function () {
-                            console.log('podio is authenticated');
+                            console.log('podio is authenticated')
                         })
                         .catch(function(error) {
                             event.preventDefault();

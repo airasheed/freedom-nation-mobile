@@ -45,7 +45,7 @@
      * @param  {Object} logger
      * @return {Function} the decorated $exceptionHandler service
      */
-    function extendExceptionHandler($delegate, exceptionHandler, logger) {
+    function extendExceptionHandler($delegate, exceptionHandler,$injector) {
         return function(exception, cause) {
             var appErrorPrefix = exceptionHandler.config.appErrorPrefix || '';
             var errorData = {exception: exception, cause: cause};
@@ -60,6 +60,7 @@
              * @example
              *     throw { message: 'error message we added' };
              */
+            var logger = $injector.get('logger');
             logger.error(exception.message, errorData);
         };
     }

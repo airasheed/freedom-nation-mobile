@@ -28,14 +28,16 @@
 
         function pullRefresh() {
             EventService.getEvent($scope.eventId, true)
-                .then(function(response) {
-                    if(response.attendees) {
-                        var attendeeIds = JSON.parse(response.attendees);
-                        return AttendeeService.getAttendees(attendeeIds,$scope.eventId,true);
-                    }
-                })
+                .then(getEventComplete)
                 .then(refreshAttendees)
                 .catch(exception.catcher('Refresh Error'));
+        }
+
+        function getEventComplete(response) {
+            if(response.attendees) {
+                var attendeeIds = JSON.parse(response.attendees);
+                return AttendeeService.getAttendees(attendeeIds,$scope.eventId,true);
+            }
         }
 
         function refreshAttendees(response) {

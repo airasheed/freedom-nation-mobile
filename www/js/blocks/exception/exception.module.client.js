@@ -1,4 +1,4 @@
 (function() {
     'use strict';
-    angular.module('blocks.exception',[]);
+    angular.module('blocks.exception',['blocks.logger']);
 })();

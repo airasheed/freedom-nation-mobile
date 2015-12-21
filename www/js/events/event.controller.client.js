@@ -12,9 +12,9 @@
         .module('app.events')
         .controller('EventController',EventController);
 
-    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee','EventService','exception'];
+    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee','EventService','exception','logger'];
 
-    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee,EventService,exception) {
+    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee,EventService,exception,logger) {
 
 
         //Public Variables
@@ -29,49 +29,61 @@
 
         /////////////////////////////
 
-
+        /*
+        * Scan Bar Code
+        * */
         function scanBarcode () {
-
             //Scanbarcode
             $cordovaBarcodeScanner.scan()
-                .then(function (imageData) {
-                    EventService.getEvent($scope.eventId,true)
-                        .then(function(response) {
-
-                            $scope.event = response;
-
-                            return attendee.getAttendeeByBarcode(imageData.text)
-                                .then(function(response) {
-                                    if(response == 'not found'){
-                                        notFound();
-                                        return;
-                                    }
-
-                                    //see if attendee list is empty
-                                    var empty = ($scope.event.attendees == undefined) ? true : false;
-                                    var onList;
-
-                                    //see if attendee is on list
-                                    if(!empty) {
-                                        onList = ($scope.event.attendees.indexOf(response.id) > -1) ? true : false;
-                                    }
-
-                                    if(onList){
-                                        alreadyAttendingAlert();
-                                    }else{
-                                        $state.go('tab.attendee-detail',
-                                            {
-                                                eventId: $scope.eventId,
-                                                attendeeId: response.id,
-                                                attending: false,
-                                                refresh: true
-                                            });
-                                    }
-
-                                });
-                        });
-                });
+                .then(scanBarcodeComplete)
+                .catch(exception.catcher('Couldn\'t read Barcode'));
         }
+
+        /*
+        * Scan Bard Code Complete
+        * */
+        function scanBarcodeComplete(imageData) {
+            EventService.getEvent($scope.eventId, true)
+                .then(function (response) {
+                    $scope.event = response;
+                    return attendee.getAttendeeByBarcode(imageData.text);
+                })
+                .then(getAttendeeBarcodeComplete)
+                .catch(exception.catcher);
+        }
+
+        /*
+        * Get AttendeeByBarCode Complete
+        * */
+        function getAttendeeBarcodeComplete(response) {
+
+            if(response == 'not found'){
+                notFound();
+                return;
+            }
+
+            //see if attendee list is empty
+            var empty = ($scope.event.attendees == undefined) ? true : false;
+            var onList;
+
+            //see if attendee is on list
+            if(!empty) {
+                onList = ($scope.event.attendees.indexOf(response.id) > -1) ? true : false;
+            }
+
+            if(onList){
+                alreadyAttendingAlert();
+            }else{
+                $state.go('tab.attendee-detail',
+                    {
+                        eventId: $scope.eventId,
+                        attendeeId: response.id,
+                        attending: false,
+                        refresh: true
+                    });
+            }
+        }
+
 
         function pullRefresh() {
             EventService.getEvent($scope.eventId,true)
@@ -85,24 +97,13 @@
         }
 
         function alreadyAttendingAlert() {
-            navigator.notification.alert(
-                'Citizen already Attending!',  // message
-                null,         // callback
-                'Freedom Nation',            // title
-                'Ok'                  // buttonName
-            );
+            logger.info('Citizen already Attending','','Freedom Nation');
         }
 
         function notFound() {
-            navigator.notification.alert(
-                'Citizen Not Found',  // message
-                null,         // callback
-                'Freedom Nation',            // title
-                'Ok'                  // buttonName
-            );
+            logger.info('Citizen Not Found','','Freedom Nation');
         }
     }
-
 
 })();
 

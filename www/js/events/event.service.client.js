@@ -128,7 +128,10 @@
                                 });
                             }
                         })
-                        .catch(exception.catcher('Error Fetching Event'));
+                        .catch(function(message){
+                            exception.catcher('Error Fetching Event')(message)
+                        }
+                    );
                     return deferred.promise;
                 }
 
@@ -161,7 +164,9 @@
                             fnCache.put('allEvents', newEvents);
                             deferred.resolve(newEvents);
                         })
-                        .catch(exception.catcher('Error Fetching Event'));
+                        .catch(function(error) {
+                            console.log(error);
+                        });
 
                     return deferred.promise;
                 };

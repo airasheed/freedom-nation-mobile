@@ -13,32 +13,34 @@
         .module('app.attendees')
         .controller('AttendeeController', AttendeeController);
 
-    AttendeeController.$inject =  ['$scope', '$stateParams', '$ionicLoading','attendee','$ionicHistory','AttendeeService','exception'];
+    AttendeeController.$inject =  ['$scope', '$stateParams', '$ionicLoading','attendee','$ionicHistory','AttendeeService','exception','logger'];
 
-    function AttendeeController($scope, $stateParams, $ionicLoading,attendee,$ionicHistory,AttendeeService,exception) {
-
-
-            var eventId = $stateParams.eventId,
-                attendeeId = $stateParams.attendeeId;
-            $scope.attending = ($stateParams.attending) ? true : false;
-            $scope.attendee = attendee;
-            $scope.addToEvent = addToEvent;
-            $scope.pullRefresh = pullRefresh;
-            $scope.goBack = goBack;
+    function AttendeeController($scope, $stateParams, $ionicLoading,attendee,$ionicHistory,AttendeeService,exception,logger) {
 
 
-            function addToEvent () {
-                $ionicLoading.show();
+        var eventId = $stateParams.eventId,
+            attendeeId = $stateParams.attendeeId;
+        $scope.attending = ($stateParams.attending) ? true : false;
+        $scope.attendee = attendee;
+        $scope.addToEvent = addToEvent;
+        $scope.pullRefresh = pullRefresh;
+        $scope.goBack = goBack;
 
-                AttendeeService.addToEvent(eventId,attendeeId)
-                    .then(function(response) {
-                        if(response !== null) {
-                            $ionicLoading.hide();
-                            attendedAddedDialog();
-                        }
-                    })
-                    .catch(exception.catcher('User not added to event'))
+
+        function addToEvent () {
+            $ionicLoading.show();
+            AttendeeService.addToEvent(eventId,attendeeId)
+                .then(addToEventComplete)
+                .catch(exception.catcher('User not added to event'))
+        }
+
+        function addToEventComplete(response) {
+            if(response !== null) {
+                $ionicLoading.hide();
+                attendeeAddedDialog();
+                goBack();
             }
+        }
 
         function pullRefresh() {
             AttendeeService.getAttendee(attendeeId,true)
@@ -52,13 +54,8 @@
         }
 
 
-        function attendedAddedDialog() {
-            navigator.notification.alert(
-                'Member Added!',  // message
-                goBack,         // callback
-                'Freedom Nation',            // title
-                'Ok'                  // buttonName
-            );
+        function attendeeAddedDialog() {
+            logger.info('Member Added', '','Freedom Nation');
         }
 
         function goBack() {
