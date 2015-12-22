@@ -25,7 +25,7 @@
             }
 
             function refreshEvent(response) {
-                console.log(response);
+
                 $scope.events = response;
                 $scope.$broadcast('scroll.refreshComplete');
             }

@@ -8,11 +8,13 @@
     function utilsService() {
 
         var service = {
-            convertDataUrl: convertDataUrl
+            convertDataUrl: convertDataUrl,
+            Mappings: Mappings
         };
 
         return service;
 
+        ////////////////////////////////////////
 
         function convertDataUrl(rawImg) {
             var raw = '',
@@ -27,5 +29,14 @@
 
             return dataURL;
         }
+
+
+        //Mappings for events and attendees
+         function Mappings(name,converter) {
+             this.name = name;
+             this.converter = converter || function(values){ return values[0].value;};
+         }
+
+
     }
 })();

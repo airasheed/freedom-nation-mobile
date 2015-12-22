@@ -22,25 +22,35 @@
     function EventService (Podio,$q,$http,utilsService,fnCache,DEFAULT_IMG,exception) {
 
 
-            var newEvent = {},
-                newEvents = [],
-                eventFieldIds = {
-                    title: 89107336,
-                    date: 89107337,
-                    attendees: 89107415,
-                    price: 89107340,
-                    desc: 89107344,
-                    img: 89107348
-                };
-            var service = {
-                getEvent: getEvent,
-                getEvents: getEvents
+        var Mappings = utilsService.Mappings;
 
-            };
+        //Podio returns a large complicated array, with field and values based upon ides
+        //Use the mappings object to create a smaller array based upon field ids
+        var mappings = {
+            '89107336' : new Mappings('name'),
+            '89107340' : new Mappings('price'),
+            '89107344' : new Mappings('description'),
+            '89107337' : new Mappings('date', function(values) {
+                return new Date(values[0].start_date);
+            }),
+            '89107348': new Mappings('img', function(values) {
+                return { file_id: values[0].value.file_id};
+            }),
+            '89107415' : new Mappings('attendees',function(values) {
+                var items = values.map(function(v){return v.value.item_id});
+                return JSON.stringify(items);
+            })
+        };
 
-            return service;
+        var service = {
+            getEvent: getEvent,
+            getEvents: getEvents
+        };
+
+        return service;
 
 
+        ////////////////////////////////////////
             /*
              * Arrange Event Data for exposing to the model
              * @param {Object} Promise Response Object
@@ -49,48 +59,14 @@
 
             function arrangeEvent(responseEvent) {
 
-                var fields = responseEvent.fields;
-                var newEvent = {};
-                newEvent.id = responseEvent.item_id;
-
-                for(var j = 0, m = fields.length; j < m; j++) {
-
-                    switch (fields[j].field_id) {
-
-                        case eventFieldIds.title : {
-                            newEvent.name =  fields[j].values[0].value;
-                            break;
-                        }
-                        case eventFieldIds.date :
-                        {
-                            newEvent.date = new Date(fields[j].values[0].start_date);
-                            break;
-                        }
-                        case eventFieldIds.attendees:{
-                            var tempArray = [];
-                            for(var k = 0, o = fields[j].values.length; k < o; k++) {
-                                tempArray.push(fields[j].values[k].value.item_id);
-                            }
-                            newEvent.attendees = JSON.stringify(tempArray);
-                            break;
-                        }
-                        case eventFieldIds.price: {
-                            newEvent.price = fields[j].values[0].value;
-                            break;
-                        }
-                        case eventFieldIds.desc : {
-                            newEvent.description = fields[j].values[0].value;
-                            break;
-                        }
-                        case eventFieldIds.img : {
-                            newEvent.img = {
-                                file_id: fields[j].values[0].value.file_id
-                            };
-                            break;
-                        }
+                var newEvent = responseEvent.fields.reduce(function (output, obj) {
+                    var mapper = mappings[obj.field_id];
+                    if (mapper) {
+                            output[mapper.name] = mapper.converter(obj.values);
                     }
-                }
-
+                    return output;
+                }, {});
+                newEvent.id = responseEvent.item_id;
                 return newEvent;
             }
 
@@ -110,8 +86,7 @@
                 }else{
                     Podio.request('get', '/item/' + eventId)
                         .then(function (responseEvent) {
-                            newEvent = arrangeEvent(responseEvent);
-
+                            var newEvent = arrangeEvent(responseEvent);
                             if(newEvent.img === undefined){
                                 newEvent.img = {
                                     src : DEFAULT_IMG.event
@@ -154,13 +129,9 @@
                 }else{
                     Podio.request('post', '/item/app/11602319/filter')
                         .then(function (response) {
-
-                            newEvents = [];
-                            var responseEvents = response.items;
-
-                            for (var i = 0, n = responseEvents.length; i < n; i++) {
-                                newEvents.push(arrangeEvent(responseEvents[i]));
-                            }
+                            var newEvents = response.items.map(function(event) {
+                                return arrangeEvent(event);
+                            });
                             fnCache.put('allEvents', newEvents);
                             deferred.resolve(newEvents);
                         })
