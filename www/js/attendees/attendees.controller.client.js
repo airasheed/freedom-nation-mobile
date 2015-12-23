@@ -16,9 +16,7 @@
     function AttendeesController ($scope,attendees,$stateParams,AttendeeService,EventService,exception) {
 
         $scope.eventId = $stateParams.eventId;
-        if($stateParams.attendeeIds){
-            $scope.attendeeIds = JSON.parse($stateParams.attendeeIds);
-        }
+        $scope.attendeeIds = ($stateParams.attendeeIds) ? JSON.parse($stateParams.attendeeIds) : undefined;
         $scope.attendees = attendees;
         $scope.empty = (!attendees) ? true : false;
         $scope.pullRefresh = pullRefresh;
