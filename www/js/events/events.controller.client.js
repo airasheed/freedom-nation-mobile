@@ -11,21 +11,21 @@
         .module('app.events')
         .controller('EventsController', EventsController);
 
-        EventsController.$inject = ['$scope','events','EventService'];
+        EventsController.$inject = ['$scope','events','EventService','exception'];
 
-        function EventsController ($scope,events,EventService) {
+        function EventsController ($scope,events,EventService,exception) {
 
             $scope.events = events;
             $scope.pullRefresh = pullRefresh;
 
-            //
+            /////////////////////////////////////////////////
             function pullRefresh() {
                 EventService.getEvents(true)
-                    .then(refreshEvent);
+                    .then(refreshEvent)
+                    .catch(exception.catcher('Refresh Error'));
             }
 
             function refreshEvent(response) {
-
                 $scope.events = response;
                 $scope.$broadcast('scroll.refreshComplete');
             }

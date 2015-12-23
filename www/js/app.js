@@ -103,7 +103,7 @@
                     views: {
                         'tab-event': {
                             templateUrl: 'views/events.html',
-                            controller: 'EventsController',
+                            controller: 'EventsController as eventsvm',
                             resolve: {
                                 events: function (EventService,$stateParams) {
                                     return EventService.getEvents($stateParams.refresh);

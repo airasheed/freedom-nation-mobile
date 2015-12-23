@@ -37,51 +37,42 @@
             $cordovaBarcodeScanner.scan()
                 .then(scanBarcodeComplete)
                 .catch(exception.catcher('Couldn\'t read Barcode'));
+
+            /*
+             * Scan Bard Code Complete
+             * */
+            function scanBarcodeComplete(imageData) {
+                EventService.getEvent($scope.eventId, true)
+                    .then(function (response) {
+                        $scope.event = response;
+                        return attendee.getAttendeeByBarcode(imageData.text);
+                    })
+                    .then(getAttendeeBarcodeComplete)
+                    .catch(exception.catcher);
+            }
         }
 
-        /*
-        * Scan Bard Code Complete
-        * */
-        function scanBarcodeComplete(imageData) {
-            EventService.getEvent($scope.eventId, true)
-                .then(function (response) {
-                    $scope.event = response;
-                    return attendee.getAttendeeByBarcode(imageData.text);
-                })
-                .then(getAttendeeBarcodeComplete)
-                .catch(exception.catcher);
-        }
 
         /*
         * Get AttendeeByBarCode Complete
         * */
         function getAttendeeBarcodeComplete(response) {
 
+            var attendeeId = response.id;
+            //If attendee not found return error.
             if(response == 'not found'){
                 notFound();
                 return;
             }
 
-            //see if attendee list is empty
-            var empty = ($scope.event.attendees == undefined) ? true : false;
-            var onList;
-
-            //see if attendee is on list
-            if(!empty) {
-                onList = ($scope.event.attendees.indexOf(response.id) > -1) ? true : false;
-            }
-
-            if(onList){
-                alreadyAttendingAlert();
+            //If there are attendees
+            //If onlist display already attending alert if not display attendee
+            if($scope.event.attendees) {
+                ($scope.event.attendees.indexOf(attendeeId) > -1) ? attendingAlert() : displayAttendee(attendeeId);
             }else{
-                $state.go('tab.attendee-detail',
-                    {
-                        eventId: $scope.eventId,
-                        attendeeId: response.id,
-                        attending: false,
-                        refresh: true
-                    });
+                displayAttendee(attendeeId);
             }
+
         }
 
 
@@ -96,12 +87,22 @@
             $scope.$broadcast('scroll.refreshComplete');
         }
 
-        function alreadyAttendingAlert() {
+        function attendingAlert() {
             logger.info('Citizen already Attending','','Freedom Nation');
         }
 
         function notFound() {
             logger.info('Citizen Not Found','','Freedom Nation');
+        }
+
+        function displayAttendee(id) {
+            $state.go('tab.attendee-detail',
+                {
+                    eventId: $scope.eventId,
+                    attendeeId: id,
+                    attending: false,
+                    refresh: true
+                });
         }
     }
 
