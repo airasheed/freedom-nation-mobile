@@ -22,6 +22,8 @@
             attendeeId = $stateParams.attendeeId;
         $scope.attending = ($stateParams.attending) ? true : false;
         $scope.attendee = attendee;
+
+        //Vm Methods
         $scope.addToEvent = addToEvent;
         $scope.pullRefresh = pullRefresh;
         $scope.goBack = goBack;

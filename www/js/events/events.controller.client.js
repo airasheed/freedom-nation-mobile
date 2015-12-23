@@ -16,6 +16,8 @@
         function EventsController ($scope,events,EventService,exception) {
 
             $scope.events = events;
+
+            //VM Methods
             $scope.pullRefresh = pullRefresh;
 
             /////////////////////////////////////////////////

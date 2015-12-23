@@ -19,6 +19,8 @@
         $scope.attendeeIds = ($stateParams.attendeeIds) ? JSON.parse($stateParams.attendeeIds) : undefined;
         $scope.attendees = attendees;
         $scope.empty = (!attendees) ? true : false;
+
+        //Vm Methods
         $scope.pullRefresh = pullRefresh;
 
 

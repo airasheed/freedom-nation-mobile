@@ -12,9 +12,9 @@
         .module('app.events')
         .controller('EventController',EventController);
 
-    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','attendee','EventService','exception','logger'];
+    EventController.$inject = ['$scope','$cordovaBarcodeScanner', '$stateParams', '$state','event','AttendeeService','EventService','exception','logger'];
 
-    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,attendee,EventService,exception,logger) {
+    function EventController($scope,$cordovaBarcodeScanner, $stateParams, $state,event,AttendeeService,EventService,exception,logger) {
 
 
         //Public Variables
@@ -23,7 +23,7 @@
         $scope.event = event;
         $scope.attending = true;
 
-        //Public Methods
+        //VM Methods
         $scope.scanBarcode = scanBarcode; //bindable function
         $scope.pullRefresh = pullRefresh;
 
@@ -45,7 +45,7 @@
                 EventService.getEvent($scope.eventId, true)
                     .then(function (response) {
                         $scope.event = response;
-                        return attendee.getAttendeeByBarcode(imageData.text);
+                        return AttendeeService.getAttendeeByBarcode(imageData.text);
                     })
                     .then(getAttendeeBarcodeComplete)
                     .catch(exception.catcher);
